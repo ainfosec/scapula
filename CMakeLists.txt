@@ -1,37 +1,51 @@
-cmake_minimum_required(VERSION 3.12)
-project(scapula)
+# MIT License
+#
+# Copyright (c) 2018 Bareflank
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-find_package(Python3 COMPONENTS Interpreter REQUIRED)
+include(${CMAKE_CURRENT_LIST_DIR}/scripts/cmake/config/default.cmake)
+include(${SCAPULA_SOURCE_CMAKE_DIR}/validate.cmake)
+include(${SCAPULA_SOURCE_CMAKE_DIR}/targets.cmake)
 
-set(PYTHONPATH ${CMAKE_CURRENT_LIST_DIR}:${VMM_PREFIX_PATH}/lib/python3/dist-packages)
+include_dependency(SCAPULA_SOURCE_DEPENDS_DIR dtc)
+include_dependency(SCAPULA_SOURCE_DEPENDS_DIR libfdt)
 
-set(SCAPULA_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/scapula)
-set(SCAPULA_STAMP_DIR ${SCAPULA_BUILD_DIR}/stamp)
-file(MAKE_DIRECTORY ${SCAPULA_STAMP_DIR})
-
-# ------------------------------------------------------------------------------
-# Generate Scaupla Tests
-# ------------------------------------------------------------------------------
-
-file(GLOB_RECURSE SCAPULA_SRC_FILES "scapula/*.py")
-
-set(SCAPULA_OUTPUT_STAMP ${SCAPULA_STAMP_DIR}/scapula_output.stamp)
-
-add_custom_command(
-    COMMAND PYTHONPATH=${PYTHONPATH} ${Python3_EXECUTABLE} -m scapula
-    COMMAND cmake -E touch ${SCAPULA_OUTPUT_STAMP}
-    OUTPUT ${SCAPULA_OUTPUT_STAMP}
-    DEPENDS ${SCAPULA_SRC_FILES}
-    COMMENT "Generating scapula outputs"
-    VERBATIM
+add_subproject(
+    shoulder vmm
+    SOURCE_DIR ${SHOULDER_SOURCE_DIR}
 )
 
-add_custom_target(generate ALL DEPENDS ${SCAPULA_OUTPUT_STAMP})
+add_subproject(
+    scapula vmm
+    DEPENDS shoulder
+    SOURCE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/scapula
+)
 
-# ------------------------------------------------------------------------------
-# Install
-# ------------------------------------------------------------------------------
-
-install(DIRECTORY scapula DESTINATION lib/python3/dist-packages)
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output/ DESTINATION include/scapula)
-
+add_subproject(
+    bootloader vmm
+    DEPENDS bfvmm
+    DEPENDS bfintrinsics
+    DEPENDS dtc
+    DEPENDS libfdt
+    DEPENDS shoulder
+    DEPENDS scapula
+    SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/bootloader/src
+    TOOLCHAIN ${SOURCE_TOOLCHAIN_DIR}/gcc_aarch64_vmm.cmake
+)

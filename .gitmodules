@@ -1,0 +1,4 @@
+[submodule "hypervisor"]
+	path = hypervisor
+	url = https://github.com/jaredwright/hypervisor
+	branch = aarch64_rebased
