@@ -20,19 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE INTERNAL "No dev warnings")
-
 cmake_minimum_required(VERSION 3.12)
-project(scapula)
-
-include(${SOURCE_CMAKE_DIR}/project.cmake)
-init_project()
+project(scapula NONE)
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 set(PYTHONPATH ${SCAPULA_SOURCE_ROOT_DIR}:${VMM_PREFIX_PATH}/lib/python3/dist-packages)
 
-# set(SCAPULA_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/scapula)
 set(SCAPULA_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SCAPULA_STAMP_DIR ${SCAPULA_BUILD_DIR}/stamp)
 file(MAKE_DIRECTORY ${SCAPULA_STAMP_DIR})
