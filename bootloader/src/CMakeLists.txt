@@ -51,12 +51,14 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-stack-protector")
 list(APPEND BOOTLOADER_SRC_FILES
     start.s
     main.c
-    boot.c
     bootloader.c
     microlib.c
     printf.c
-    util.s
     uart_tegra.s
+    interrupt_vectors.s
+    interrupt_vectors.c
+    switch_exception_level.s
+    switch_exception_level.c
 )
 
 # add_vmm_executable(bootloader SOURCES ${BOOTLOADER_SRC_FILES})
