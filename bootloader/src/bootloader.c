@@ -1,9 +1,32 @@
 #include <microlib.h>
+#include <stdbool.h>
 #include <shoulder/CHeaderGenerator/shoulder.h>
 #include "bootloader.h"
 #include "interrupt_vectors.h"
 
-boot_ret_t print_banner()
+// ----------------------------------------------------------------------------
+// Bootloader global state variables and accessors
+// ----------------------------------------------------------------------------
+
+// ARMv8-A does not provide a way to detect which excpetion level you are in
+// if currently executing in EL0. Therefore, this global var tracks the
+// current EL
+static volatile uint32_t g_current_el = 0;
+
+uint32_t get_current_el(void)
+{
+    return g_current_el;
+}
+
+void set_current_el(uint32_t new_el)
+{
+    g_current_el = new_el;
+}
+
+// ----------------------------------------------------------------------------
+// Bootloader components
+// ----------------------------------------------------------------------------
+void print_banner(void)
 {
     BOOTLOADER_PRINT("=======================================");
     BOOTLOADER_PRINT(" ___                __ _           _   ");
@@ -12,11 +35,9 @@ boot_ret_t print_banner()
     BOOTLOADER_PRINT("|___/\\__,_|_| \\___|_| |_\\__,_|_||_|_\\_\\");
     BOOTLOADER_PRINT("     Bootloader  ");
     BOOTLOADER_PRINT("=======================================");
-
-    return BOOT_SUCCESS;
 }
 
-boot_ret_t panic()
+void panic(void)
 {
     BOOTLOADER_PRINT("--------------------------------------------------------");
     BOOTLOADER_PRINT("|\\     /||\\     /|       (  ___  )|\\     /|       / )");
@@ -31,13 +52,13 @@ boot_ret_t panic()
     while(1);
 }
 
-boot_ret_t verify_environment()
+boot_ret_t verify_environment(void)
 {
     BOOTLOADER_INFO("Verifying environment");
 
-    uint32_t el = get_current_el();
-    BOOTLOADER_SUBINFO("executing in EL%u", el);
-    if (el != 2) {
+    uint32_t current_el = get_current_el();
+    BOOTLOADER_SUBINFO("executing in EL%u", current_el);
+    if (current_el != 2) {
         BOOTLOADER_ERROR("Bareflank must be launched from EL2, aborting");
         return BOOT_FAIL;
     }
@@ -52,9 +73,18 @@ boot_ret_t verify_environment()
     return BOOT_SUCCESS;
 }
 
-boot_ret_t init_bootloader()
+boot_ret_t init_bootloader(void)
 {
     print_banner();
+
+    // Initialize g_current_el with whatever exception level the bootloader
+    // is launched in
+    // TODO This should be re-written using shoulder functions once shoulder.h
+    // is fully integrated
+    uint32_t current_el = 0;
+    READ_SYSREG_32(CurrentEl, current_el);
+    current_el = current_el >> 2;
+    set_current_el(current_el);
 
     boot_ret_t status = verify_environment();
     if (status != BOOT_SUCCESS) return status;

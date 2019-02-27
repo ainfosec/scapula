@@ -1,17 +1,14 @@
 #include <stdint.h>
-#include "bootloader.h"
+#include "switch_exception_level.h"
 #include "microlib.h"
 #include <shoulder/CHeaderGenerator/shoulder.h>
 
 // Low-level helpers in switch_exception_level.s
+// These are private implmentation details of this file file only
 void _switch_el2_to_el1(void);
 void _switch_el1_to_el0(void);
 void _switch_el1_to_el2(void);
 void _switch_el0_to_el1(void);
-
-// ARMv8-A does not provide a way to detect which excpetion level you are in
-// if currently executing in EL0. Therefore, this global tracks current EL
-static volatile uint32_t g_current_el = 2;
 
 boot_ret_t switch_to_el2(uint64_t current_el)
 {
@@ -25,7 +22,7 @@ boot_ret_t switch_to_el2(uint64_t current_el)
             _switch_el1_to_el2();
             BOOTLOADER_INFO("...done");
         case 2:
-            g_current_el = 2;
+            set_current_el(2);
             return BOOT_SUCCESS;
         default:
             return BOOT_FAIL;
@@ -48,13 +45,13 @@ boot_ret_t switch_to_el1(uint64_t current_el)
             _switch_el2_to_el1();
             BOOTLOADER_INFO("...done");
         case 1:
-            g_current_el = 1;
+            set_current_el(1);
             return BOOT_SUCCESS;
         case 0:
             BOOTLOADER_INFO("Switching EL0->EL1");
             _switch_el0_to_el1();
             BOOTLOADER_INFO("...done");
-            g_current_el = 1;
+            set_current_el(1);
             return BOOT_SUCCESS;
         default:
             return BOOT_FAIL;
@@ -76,7 +73,7 @@ boot_ret_t switch_to_el0(uint64_t current_el)
             _switch_el1_to_el0();
             BOOTLOADER_INFO("...done");
         case 0:
-            g_current_el = 0;
+            set_current_el(0);
             return BOOT_SUCCESS;
         default:
             return BOOT_FAIL;
@@ -90,20 +87,21 @@ boot_ret_t switch_to_el(uint32_t target_el)
         return BOOT_FAIL;
     }
 
-    if(g_current_el > 2) {
-        BOOTLOADER_ERROR("Invalid current excpetion level: %u", g_current_el);
+    uint32_t current_el = get_current_el();
+    if(current_el > 2) {
+        BOOTLOADER_ERROR("Invalid current excpetion level: %u", current_el);
         return BOOT_FAIL;
     }
 
     switch(target_el){
         case 0:
-            switch_to_el0(g_current_el);
+            switch_to_el0(current_el);
             break;
         case 1:
-            switch_to_el1(g_current_el);
+            switch_to_el1(current_el);
             break;
         case 2:
-            switch_to_el2(g_current_el);
+            switch_to_el2(current_el);
             break;
         default:
             return BOOT_FAIL;
