@@ -8,7 +8,7 @@ _header:
         b       _bootloader_start
         .long   0               // reserved
         .quad   0               // Image load offset from start of RAM
-        .quad   0x2000000       // Image size to be processed, little endian (32MiB, default for Pixel C)
+        .quad   0x2000000       // Image size, little endian (32MiB)
         .quad   0               // reserved
         .quad   0               // reserved
         .quad   0               // reserved
