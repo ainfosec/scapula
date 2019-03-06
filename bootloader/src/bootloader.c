@@ -1,5 +1,4 @@
 #include <microlib.h>
-#include <stdbool.h>
 #include <shoulder/CHeaderGenerator/shoulder.h>
 #include "bootloader.h"
 #include "interrupt_vectors.h"
