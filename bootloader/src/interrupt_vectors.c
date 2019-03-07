@@ -19,19 +19,19 @@ void to_el1t_synchronous_from_el1(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el1t_irq_from_el1(void)
 {
     VECTOR_PRINT("to_el1t_irq_from_el1");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1t_fiq_from_el1(void)
 {
-    set_current_el(1);
     VECTOR_PRINT("to_el1t_fiq_from_el1");
+    panic();
 }
 
 void to_el1t_serror_from_el1(void)
 {
     VECTOR_PRINT("to_el1t_serror_from_el1");
-    set_current_el(1);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -48,19 +48,19 @@ void to_el1h_synchronous_from_el1(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el1h_irq_from_el1(void)
 {
     VECTOR_PRINT("to_el1h_irq_from_el1");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1h_fiq_from_el1(void)
 {
     VECTOR_PRINT("to_el1h_fiq_from_el1");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1h_serror_from_el1(void)
 {
     VECTOR_PRINT("to_el1h_serror_from_el1");
-    set_current_el(1);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -77,19 +77,19 @@ void to_el1_synchronous_from_aarch64(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el1_irq_from_aarch64(void)
 {
     VECTOR_PRINT("to_el1_irq_from_aarch64");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1_fiq_from_aarch64(void)
 {
     VECTOR_PRINT("to_el1_fiq_from_aarch64");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1_serror_from_aarch64(void)
 {
     VECTOR_PRINT("to_el1_serror_from_aarch64");
-    set_current_el(1);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -106,19 +106,19 @@ void to_el1_synchronous_from_aarch32(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el1_irq_from_aarch32(void)
 {
     VECTOR_PRINT("to_el1_irq_from_aarch32");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1_fiq_from_aarch32(void)
 {
     VECTOR_PRINT("to_el1_fiq_from_aarch32");
-    set_current_el(1);
+    panic();
 }
 
 void to_el1_serror_from_aarch32(void)
 {
     VECTOR_PRINT("to_el1_serror_from_aarch32");
-    set_current_el(1);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -135,19 +135,19 @@ void to_el2t_synchronous_from_el2(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el2t_irq_from_el2(void)
 {
     VECTOR_PRINT("to_el2t_irq_from_el2");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2t_fiq_from_el2(void)
 {
     VECTOR_PRINT("to_el2t_fiq_from_el2");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2t_serror_from_el2(void)
 {
     VECTOR_PRINT("to_el2t_serror_from_el2");
-    set_current_el(2);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -164,19 +164,19 @@ void to_el2h_synchronous_from_el2(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el2h_irq_from_el2(void)
 {
     VECTOR_PRINT("to_el2h_irq_from_el2");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2h_fiq_from_el2(void)
 {
     VECTOR_PRINT("to_el2h_fiq_from_el2");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2h_serror_from_el2(void)
 {
     VECTOR_PRINT("to_el2h_serror_from_el2");
-    set_current_el(2);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -193,19 +193,19 @@ void to_el2_synchronous_from_aarch64(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el2_irq_from_aarch64(void)
 {
     VECTOR_PRINT("to_el2_irq_from_aarch64");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2_fiq_from_aarch64(void)
 {
     VECTOR_PRINT("to_el2_fiq_from_aarch64");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2_serror_from_aarch64(void)
 {
     VECTOR_PRINT("to_el2_serror_from_aarch64");
-    set_current_el(2);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -222,19 +222,19 @@ void to_el2_synchronous_from_aarch32(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el2_irq_from_aarch32(void)
 {
     VECTOR_PRINT("to_el2_irq_from_aarch32");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2_fiq_from_aarch32(void)
 {
     VECTOR_PRINT("to_el2_fiq_from_aarch32");
-    set_current_el(2);
+    panic();
 }
 
 void to_el2_serror_from_aarch32(void)
 {
     VECTOR_PRINT("to_el2_serror_from_aarch32");
-    set_current_el(2);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -251,19 +251,19 @@ void to_el3t_synchronous_from_el3(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el3t_irq_from_el3(void)
 {
     VECTOR_PRINT("to_el3t_irq_from_el3");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3t_fiq_from_el3(void)
 {
     VECTOR_PRINT("to_el3t_fiq_from_el3");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3t_serror_from_el3(void)
 {
     VECTOR_PRINT("to_el3t_serror_from_el3");
-    set_current_el(3);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -280,19 +280,19 @@ void to_el3h_synchronous_from_el3(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el3h_irq_from_el3(void)
 {
     VECTOR_PRINT("to_el3h_irq_from_el3");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3h_fiq_from_el3(void)
 {
     VECTOR_PRINT("to_el3h_fiq_from_el3");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3h_serror_from_el3(void)
 {
     VECTOR_PRINT("to_el3h_serror_from_el3");
-    set_current_el(3);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -309,19 +309,19 @@ void to_el3_synchronous_from_aarch64(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el3_irq_from_aarch64(void)
 {
     VECTOR_PRINT("to_el3_irq_from_aarch64");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3_fiq_from_aarch64(void)
 {
     VECTOR_PRINT("to_el3_fiq_from_aarch64");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3_serror_from_aarch64(void)
 {
     VECTOR_PRINT("to_el3_serror_from_aarch64");
-    set_current_el(3);
+    panic();
 }
 
 // ----------------------------------------------------------------------------
@@ -338,17 +338,17 @@ void to_el3_synchronous_from_aarch32(uintptr_t sp, uintptr_t lr, uintptr_t ret)
 void to_el3_irq_from_aarch32(void)
 {
     VECTOR_PRINT("to_el3_irq_from_aarch32");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3_fiq_from_aarch32(void)
 {
     VECTOR_PRINT("to_el3_fiq_from_aarch32");
-    set_current_el(3);
+    panic();
 }
 
 void to_el3_serror_from_aarch32(void)
 {
     VECTOR_PRINT("to_el3_serror_from_aarch32");
-    set_current_el(3);
+    panic();
 }
