@@ -17,6 +17,12 @@ typedef uint64_t boot_ret_t;
 // otherwise returns BOOT_FAIL
 boot_ret_t init_bootloader(void);
 
+// print_success
+//
+// Prints a success banner
+//
+void print_success(void);
+
 // panic
 //
 // Prints a panic banner, and then halts the CPU
