@@ -1,6 +1,3 @@
-import os
-import pkgutil
-
-pkg_dir = os.path.dirname(__file__)
-for (module_loader, name, ispkg) in pkgutil.iter_modules([pkg_dir]):
-    pkgutil.importlib.import_module('.' + name, __package__)
+from .execute_at import execute_at
+from .main_function import main_function
+from .testcase import testcase
