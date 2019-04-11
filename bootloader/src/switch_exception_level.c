@@ -31,15 +31,15 @@ boot_ret_t switch_to_el2(uint64_t current_el)
 
 boot_ret_t switch_to_el1(uint64_t current_el)
 {
-    uint32_t spsr_el2 = 0;
-    uint32_t m_3_0 = 0;
+    uint64_t spsr_el2 = 0;
+    uint64_t m_3_0 = 0;
 
     switch(current_el){
         case 2:
             spsr_el2 = aarch64_spsr_el2_get();
-            m_3_0 = aarch64_spsr_el2_m_3_0__get();
+            m_3_0 = aarch64_spsr_el2_fieldset_2_m_3_0__get_val(spsr_el2);
             m_3_0 = (m_3_0 & 0x1) | 0x4;
-            spsr_el2 = aarch64_spsr_el2_m_3_0__set_val(spsr_el2, m_3_0);
+            spsr_el2 = aarch64_spsr_el2_fieldset_2_m_3_0__set_val(spsr_el2, m_3_0);
             aarch64_spsr_el2_set(spsr_el2);
             BOOTLOADER_INFO("Switching EL2->EL1");
             _switch_el2_to_el1();
@@ -67,7 +67,7 @@ boot_ret_t switch_to_el0(uint64_t current_el)
             switch_to_el1(current_el);
         case 1:
             spsr_el1 = aarch64_spsr_el1_get();
-            aarch64_spsr_el1_m_3_0__set_val(spsr_el1, 0);
+            aarch64_spsr_el1_fieldset_2_m_3_0__set_val(spsr_el1, 0);
             aarch64_spsr_el1_set(spsr_el1);
             BOOTLOADER_INFO("Switching EL1->EL0");
             _switch_el1_to_el0();
