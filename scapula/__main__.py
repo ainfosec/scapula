@@ -24,5 +24,6 @@ for key, g in scapula.generator.generators.items():
 
     if os.path.exists(shoulder.config.accessor_macros_path):
         shutil.copy(shoulder.config.accessor_macros_path, sub_outdir)
+        shutil.copy(shoulder.config.encoded_macros_path, sub_outdir)
 
     g.generate(regs, sub_outdir)
