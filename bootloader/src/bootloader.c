@@ -1,5 +1,4 @@
 #include <microlib.h>
-#include <stdbool.h>
 #include <shoulder/CHeaderGenerator/shoulder.h>
 #include "bootloader.h"
 #include "interrupt_vectors.h"
@@ -35,6 +34,21 @@ void print_banner(void)
     BOOTLOADER_PRINT("|___/\\__,_|_| \\___|_| |_\\__,_|_||_|_\\_\\");
     BOOTLOADER_PRINT("     Bootloader  ");
     BOOTLOADER_PRINT("=======================================");
+}
+
+void print_success(void)
+{
+    BOOTLOADER_PRINT("---------------------------------------------------------------");
+    BOOTLOADER_PRINT(" _______           _______  _______  _______  _______  _______");
+    BOOTLOADER_PRINT("(  ____ \\|\\     /|(  ____ \\(  ____ \\(  ____ \\(  ____ \\(  ____ \\");
+    BOOTLOADER_PRINT("| (    \\/| )   ( || (    \\/| (    \\/| (    \\/| (    \\/| (    \\/");
+    BOOTLOADER_PRINT("| (_____ | |   | || |      | |      | (__    | (_____ | (_____");
+    BOOTLOADER_PRINT("(_____  )| |   | || |      | |      |  __)   (_____  )(_____  )");
+    BOOTLOADER_PRINT("      ) || |   | || |      | |      | (            ) |      ) |");
+    BOOTLOADER_PRINT("/\\____) || (___) || (____/\\| (____/\\| (____/\\/\\____) |/\\____) |");
+    BOOTLOADER_PRINT("\\_______)(_______)(_______/(_______/(_______/\\_______)\\_______)");
+    BOOTLOADER_PRINT("        The bareflank bootloader exited successfully");
+    BOOTLOADER_PRINT("---------------------------------------------------------------");
 }
 
 void panic(void)

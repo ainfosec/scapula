@@ -20,19 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import shoulder
 
-class SwitchToEl1Gadget(shoulder.gadget.abstract_gadget.AbstractGadget):
+class RegisterHasRES1Filter(shoulder.filter.abstract_filter.AbstractFilter):
     @property
     def description(self):
-        msg = "Generate a function that changes the current exception level "
-        msg += "to EL1"
-        return msg
+        return "registers that contain reserved 1 (RES1) fields"
 
-    def generate(self, objects, outpath):
-        shoulder.logger.debug("TODO: Make a function that swtiches to EL1")
+    def do_filter(self, reg):
+        for fs in reg.fieldsets:
+            for f in fs.fields:
+                if f.name == "1":
+                    return False
 
-def generate(objects, outfile):
-    g = SwitchToEl1Gadget()
-    g.generate(objects, outfile)
+        return True
