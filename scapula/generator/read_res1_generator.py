@@ -13,9 +13,7 @@ class ReadRes1Generator(shoulder.generator.abstract_generator.AbstractGenerator)
 
         # Filters
         regs = objects
-        regs = shoulder.filter.filter_all(regs)
 
-        regs = shoulder.transform.transforms["n_counter_to_zero"].transform(regs)
         regs = shoulder.transform.transforms["quirks"].transform(regs)
         regs = shoulder.transform.transforms["special_to_underscore"].transform(regs)
 
@@ -31,10 +29,11 @@ class ReadRes1Generator(shoulder.generator.abstract_generator.AbstractGenerator)
         outfile_path = os.path.abspath(os.path.join(outpath, "read_res1_tests.h"))
         shoulder.logger.info("Generating RES1 field tests")
         with open(outfile_path, "w") as outfile:
+            self.gadgets["shoulder.include_guard"].name = "SCAPULA_RESERVED_1_TESTS_H"
             self._generate_all(outfile, regs)
 
     @shoulder.gadget.license
-    @shoulder.gadget.include_guard(name="SCAPULA_RESERVED_1_TESTS_H")
+    @shoulder.gadget.include_guard
     def _generate_all(self, outfile, objects):
         outfile.write("#include \"shoulder.h\"\n\n")
         self._generate_test_cases(outfile, objects)
