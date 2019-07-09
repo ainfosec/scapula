@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import io
+
 from dataclasses import dataclass
 from shoulder.gadget.gadget_properties import GadgetProperties
 
@@ -38,6 +40,9 @@ class properties(GadgetProperties):
 
     verbose: bool = False
     """ Set to True to generate verbose print statements """
+
+    indent_contents: bool = True
+    """ Set True to indent testcase contents one level above definition """
 
 def testcase(decorated):
     """
@@ -68,17 +73,32 @@ def testcase(decorated):
         outfile.write(testcase_call)
         outfile.write("{\n")
 
+        contents = io.StringIO()
+
         if properties.verbose == True:
             banner_text = "**********************************************"
-            outfile.write("\tBOOTLOADER_PRINT(\"" + banner_text + "\");\n")
+            contents.write("BOOTLOADER_PRINT(\"" + banner_text + "\");\n")
 
             testcase_text = "Running: " + testcase_name
-            outfile.write("\tBOOTLOADER_PRINT(\"" + testcase_text + "\");\n")
+            contents.write("BOOTLOADER_PRINT(\"" + testcase_text + "\");\n")
 
-        decorated(generator, outfile, *args, **kwargs)
+        decorated(generator, contents, *args, **kwargs)
 
         if properties.verbose == True:
-            outfile.write("\tBOOTLOADER_PRINT(\"... test complete\");\n")
+            contents.write("BOOTLOADER_PRINT(\"... test complete\");\n")
+
+        lines = contents.getvalue().splitlines()
+
+        if len(lines) == 1:
+            outfile.write(" ")
+            outfile.write(lines[0])
+            outfile.write(" ")
+
+        elif len(lines) > 1:
+            for line in lines:
+                if properties.indent_contents:
+                    outfile.write("\t")
+                outfile.write(line + "\n")
 
         outfile.write("}\n\n")
 
