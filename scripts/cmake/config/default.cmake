@@ -101,6 +101,13 @@ add_config(
     DESCRIPTION "Path to Shoulder project"
 )
 
+add_config(
+    CONFIG_NAME SERIAL_BASE
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 0x70006000
+    DESCRIPTION "The base address of an 8250 serial port for printing messages"
+)
+
 # ------------------------------------------------------------------------------
 # Links
 # ------------------------------------------------------------------------------

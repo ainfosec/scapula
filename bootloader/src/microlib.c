@@ -49,6 +49,7 @@ void * memcpy(void * dest, const void * src, size_t n)
  *
  * @param c The character to be printed
  */
+extern void _putc(char c);
 void putc(char c, void *stream)
 {
     // If we're about to send a newline, prefix it with a carriage return.
@@ -56,11 +57,7 @@ void putc(char c, void *stream)
     if(c == '\n')
         putc('\r', stream);
 
-    asm volatile(
-          "mov x0, %0\n\t"
-          "bl  _putc\n\t"
-          :: "r" (c) : "x0", "x1", "x2", "x30"
-    );
+    _putc(c);
 }
 
 /**

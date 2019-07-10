@@ -1,10 +1,9 @@
 import shoulder
 import os
-import pkgutil
 import shutil
+import copy
 
 import scapula.generator
-from scapula.filter import filters
 from scapula.transform import transforms
 
 # Scapula-specific constants
@@ -25,4 +24,9 @@ for key, g in scapula.generator.generators.items():
     if os.path.exists(shoulder.config.shoulder_include_dir):
         shutil.copytree(shoulder.config.shoulder_include_dir, sub_outdir)
 
-    g.generate(regs, sub_outdir)
+    # Scaupla uses custom register accessors that need to preserve the contents
+    # of r0, so allways use r9 as a source/destitation for encoded accessors
+    regs = transforms["encoded_rt_to_r9"].transform(regs)
+    shoulder.config.encoded_functions = True
+
+    g.generate(copy.deepcopy(regs), sub_outdir)

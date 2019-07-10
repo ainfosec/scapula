@@ -54,19 +54,24 @@ list(APPEND BOOTLOADER_SRC_FILES
     bootloader.c
     microlib.c
     printf.c
-    uart_tegra.s
+    serial_8250_mini.c
     interrupt_vectors.s
     interrupt_vectors.c
     switch_exception_level.s
     switch_exception_level.c
 )
 
-# add_vmm_executable(bootloader SOURCES ${BOOTLOADER_SRC_FILES})
 add_executable(bootloader_static ${BOOTLOADER_SRC_FILES})
+
+target_compile_definitions(bootloader_static
+    PRIVATE BOOTLOADER_CONFIG_SERIAL_BASE=${SERIAL_BASE}
+)
+
 set(BOOTLOADER_LINKER_SCRIPT "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/bootloader.lds")
 set_target_properties(bootloader_static PROPERTIES LINK_DEPENDS ${BOOTLOADER_LINKER_SCRIPT})
 target_link_libraries(bootloader_static -T ${BOOTLOADER_LINKER_SCRIPT})
 # set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_LINK_EXECUTABLE} -T ${BOOTLOADER_LINKER_SCRIPT}")
+
 set(BOOTLOADER_ELF ${CMAKE_CURRENT_BINARY_DIR}/bootloader_static)
 
 # ------------------------------------------------------------------------------
@@ -77,21 +82,30 @@ set(BOOTLOADER_ELF ${CMAKE_CURRENT_BINARY_DIR}/bootloader_static)
 unset(DTC_BIN CACHE)
 find_program(DTC_BIN dtc HINTS ${CMAKE_INSTALL_PREFIX}/bin/)
 if(DTC_BIN STREQUAL DTC_BIN-NOTFOUND)
-    message(FATAL_ERROR "Device Tree Compiiler not found!")
+    message(FATAL_ERROR "Device Tree Compiler not found!")
 else()
     message(STATUS "Using Device Tree Compiler: ${DTC_BIN}")
 endif()
 
-set(DEVICE_TREE_BINARY ${CMAKE_CURRENT_BINARY_DIR}/device_tree.dtb)
+if(EXISTS ${DEVICE_TREE_SOURCE})
+    set(DTS ${DEVICE_TREE_SOURCE})
+elseif(EXISTS ${SCAPULA_DEVICE_TREE_DIR}/${DEVICE_TREE_SOURCE})
+    set(DTS ${SCAPULA_DEVICE_TREE_DIR}/${DEVICE_TREE_SOURCE})
+else()
+    message(FATAL_ERROR "Device tree source not found: ${DEVICE_TREE_SOURCE}")
+endif()
+
+set(DTB ${CMAKE_CURRENT_BINARY_DIR}/device_tree.dtb)
+
 add_custom_command(
     COMMAND ${DTC_BIN} --quiet --align 1024 -I dts -O dtb
-        -o ${DEVICE_TREE_BINARY} ${DEVICE_TREE_SOURCE}
-    OUTPUT ${DEVICE_TREE_BINARY}
-    DEPENDS ${DEVICE_TREE_SOURCE}
-    COMMENT "Creating device tree binary using: ${DEVICE_TREE_SOURCE}"
+    -o ${DTB} ${DTS}
+    OUTPUT ${DTB}
+    DEPENDS ${DTS}
+    COMMENT "Creating device tree binary using: ${DTS}"
 )
-add_custom_target(bootloader_dtb ALL DEPENDS ${DEVICE_TREE_BINARY})
-install(FILES ${DEVICE_TREE_BINARY} DESTINATION boot)
+add_custom_target(bootloader_dtb ALL DEPENDS ${DTB})
+install(FILES ${DTB} DESTINATION boot)
 
 # ------------------------------------------------------------------------------
 # Bootloader raw binary (.bin)
@@ -126,3 +140,5 @@ endif()
 if(BUILD_IMAGE_FORMAT STREQUAL "fit")
     # TODO: Package up bootloader, device tree, and a kernel into bootloader.fit
 endif()
+
+install(DIRECTORY ../include/ DESTINATION include/bootloader)

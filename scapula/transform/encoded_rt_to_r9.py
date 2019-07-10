@@ -20,29 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
-import sys
-import pkgutil
+import shoulder
 
-pkg_dir = os.path.dirname(__file__)
-for (module_loader, name, ispkg) in pkgutil.iter_modules([pkg_dir]):
-    pkgutil.importlib.import_module('.' + name, __package__)
 
-# -----------------------------------------------------------------------------
-# Module interface
-# -----------------------------------------------------------------------------
+class EncodedRtToR9(shoulder.transform.abstract_transform.AbstractTransform):
+    @property
+    def description(self):
+        d = "changing src/dest register for encoded accessors from r0 to r9"
+        return d
 
-# Usage:
-#
-# from shoulder.transform import transforms
-# registers = transforms["name"].transform(registers)
+    def do_transform(self, reg):
+        for am in reg.access_mechanisms["mrs_register"]:
+            am.rt = 9
 
-transforms = {
-    "encoded_rt_to_r9": encoded_rt_to_r9.EncodedRtToR9(),
-    "only_res0": only_res0.OnlyRes0Transform(),
-    "only_res1": only_res1.OnlyRes1Transform(),
-    "only_imp_def": only_imp_def.OnlyImpDefTransform(),
-    "unique_res0": unique_res0.UniqueRES0Transform(),
-    "unique_res1": unique_res1.UniqueRES1Transform(),
-    "unique_imp_def": unique_imp_def.UniqueImpDefTransform()
-}
+        for am in reg.access_mechanisms["msr_register"]:
+            am.rt = 9
+
+        return reg
