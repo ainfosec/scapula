@@ -54,12 +54,23 @@ list(APPEND BOOTLOADER_SRC_FILES
     bootloader.c
     microlib.c
     printf.c
-    serial_8250_mini.c
     interrupt_vectors.s
     interrupt_vectors.c
     switch_exception_level.s
     switch_exception_level.c
 )
+
+if(SERIAL_DEVICE STREQUAL "8250_mini")
+    list(APPEND BOOTLOADER_SRC_FILES
+        serial_8250_mini.c
+    )
+elseif(SERIAL_DEVICE STREQUAL "pl011_primecell")
+    list(APPEND BOOTLOADER_SRC_FILES
+        serial_pl011_primecell.c
+    )
+else()
+    message(FATAL_ERROR "Serial device not found: ${SERIAL_DEVICE}")
+endif()
 
 add_executable(bootloader_static ${BOOTLOADER_SRC_FILES})
 

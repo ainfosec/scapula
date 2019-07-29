@@ -108,6 +108,13 @@ add_config(
     DESCRIPTION "The base address of an 8250 serial port for printing messages"
 )
 
+add_config(
+    CONFIG_NAME SERIAL_DEVICE
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 8250_mini
+    DESCRIPTION "The model of serial device used for printing messages"
+)
+
 # ------------------------------------------------------------------------------
 # Links
 # ------------------------------------------------------------------------------
