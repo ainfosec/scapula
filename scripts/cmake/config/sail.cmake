@@ -1,0 +1,4 @@
+set(BUILD_IMAGE_FORMAT bin)
+set(DEVICE_TREE_SOURCE sail.dts)
+set(SERIAL_BASE 0x3c000000)
+set(SERIAL_DEVICE pl011_primecell)
