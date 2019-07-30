@@ -78,7 +78,15 @@ target_compile_definitions(bootloader_static
     PRIVATE BOOTLOADER_CONFIG_SERIAL_BASE=${SERIAL_BASE}
 )
 
-set(BOOTLOADER_LINKER_SCRIPT "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/bootloader.lds")
+if(NOT BOOTLOADER_START_ADDRESS)
+    message(FATAL_ERROR "Bootloader start address has not been set")
+endif()
+configure_file(
+    "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/bootloader.lds"
+    "${CMAKE_CURRENT_BINARY_DIR}/bootloader.lds"
+)
+
+set(BOOTLOADER_LINKER_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/bootloader.lds")
 set_target_properties(bootloader_static PROPERTIES LINK_DEPENDS ${BOOTLOADER_LINKER_SCRIPT})
 target_link_libraries(bootloader_static -T ${BOOTLOADER_LINKER_SCRIPT})
 # set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_LINK_EXECUTABLE} -T ${BOOTLOADER_LINKER_SCRIPT}")

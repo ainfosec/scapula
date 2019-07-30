@@ -4,9 +4,7 @@ ENTRY(_header)
 SECTIONS
 {
     /* Load/entry point (where the previous stage bootloader will place us) */
-    /* TODO: Make this configurable through CMake */
-    /* . = 0xf0000000; */
-    . = 0x80000000;
+    . = ${BOOTLOADER_START_ADDRESS};
 
     . = ALIGN(4);
     .text : {
