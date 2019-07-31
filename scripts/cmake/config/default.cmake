@@ -115,6 +115,14 @@ add_config(
     DESCRIPTION "The model of serial device used for printing messages"
 )
 
+add_config(
+    CONFIG_NAME BOOTLOADER_START_ADDRESS
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 0x80000000
+    DESCRIPTION "Address for the bootloader to start at"
+)
+
+
 # ------------------------------------------------------------------------------
 # Links
 # ------------------------------------------------------------------------------
