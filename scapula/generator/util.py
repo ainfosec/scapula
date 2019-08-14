@@ -1,12 +1,21 @@
-
 def get_register_func(reg):
-    return "aarch64_{rname}_get".format(
+    es = reg.execution_state
+    if es is None:
+        es = "external"
+
+    return "{es}_{rname}_get".format(
+        es=es,
         rname=reg.name.lower()
     )
 
 
 def get_register_field_func(reg, field):
-    return "aarch64_{rname}_{fname}_{getter}".format(
+    es = reg.execution_state
+    if es is None:
+        es = "external"
+
+    return "{es}_{rname}_{fname}_{getter}".format(
+        es=es,
         rname=reg.name.lower(),
         fname=field.name.lower(),
         getter="is_enabled" if field.lsb == field.msb else "get"
