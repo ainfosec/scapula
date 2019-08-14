@@ -29,21 +29,6 @@ init_project(
     INCLUDES ${PROJECT_SOURCE_DIR}/../../bfsdk/include
 )
 
-# TODO: Eventually, we need to support all of these flags, they are removed
-# while devloping an initial proof-of-concept
-string(REPLACE "-std=c11 " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "-Wall " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "-Werror " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "-Wconversion " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "-Wpedantic " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "-Wextra " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "-Wsign-conversion " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "--target=${BUILD_TARGET_ARCH}-vmm-elf " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "--target=${BUILD_TARGET_ARCH}-vmm-elf " "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mgeneral-regs-only")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-stack-protector")
-
 # ------------------------------------------------------------------------------
 # Main bootloader elf executable
 # ------------------------------------------------------------------------------
@@ -72,92 +57,24 @@ else()
     message(FATAL_ERROR "Serial device not found: ${SERIAL_DEVICE}")
 endif()
 
-add_executable(bootloader_static ${BOOTLOADER_SRC_FILES})
+add_executable(bootloader ${BOOTLOADER_SRC_FILES})
 
-target_compile_definitions(bootloader_static
+target_compile_definitions(bootloader
     PRIVATE BOOTLOADER_CONFIG_SERIAL_BASE=${SERIAL_BASE}
 )
 
-if(NOT BOOTLOADER_START_ADDRESS)
-    message(FATAL_ERROR "Bootloader start address has not been set")
-endif()
-configure_file(
-    "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/bootloader.lds"
-    "${CMAKE_CURRENT_BINARY_DIR}/bootloader.lds"
+set(BOOTLOADER_LINKER_SCRIPT "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/bootloader.lds")
+set_target_properties(bootloader PROPERTIES LINK_DEPENDS ${BOOTLOADER_LINKER_SCRIPT})
+target_link_libraries(bootloader -T ${BOOTLOADER_LINKER_SCRIPT})
+
+list(APPEND LIBRARIES
+    ${CMAKE_INSTALL_PREFIX}/lib/libfdt.a
+    ${CMAKE_INSTALL_PREFIX}/lib/libc.a
+    ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a
+    ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a
 )
 
-set(BOOTLOADER_LINKER_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/bootloader.lds")
-set_target_properties(bootloader_static PROPERTIES LINK_DEPENDS ${BOOTLOADER_LINKER_SCRIPT})
-target_link_libraries(bootloader_static -T ${BOOTLOADER_LINKER_SCRIPT})
-# set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_LINK_EXECUTABLE} -T ${BOOTLOADER_LINKER_SCRIPT}")
+target_link_libraries(bootloader ${LIBRARIES})
 
-set(BOOTLOADER_ELF ${CMAKE_CURRENT_BINARY_DIR}/bootloader_static)
-
-# ------------------------------------------------------------------------------
-# Platform flattened device tree / device tree binary (.dtb)
-# ------------------------------------------------------------------------------
-
-# Device tree compiler (installed in the VMM prefix as a dependency)
-unset(DTC_BIN CACHE)
-find_program(DTC_BIN dtc HINTS ${CMAKE_INSTALL_PREFIX}/bin/)
-if(DTC_BIN STREQUAL DTC_BIN-NOTFOUND)
-    message(FATAL_ERROR "Device Tree Compiler not found!")
-else()
-    message(STATUS "Using Device Tree Compiler: ${DTC_BIN}")
-endif()
-
-if(EXISTS ${DEVICE_TREE_SOURCE})
-    set(DTS ${DEVICE_TREE_SOURCE})
-elseif(EXISTS ${SCAPULA_DEVICE_TREE_DIR}/${DEVICE_TREE_SOURCE})
-    set(DTS ${SCAPULA_DEVICE_TREE_DIR}/${DEVICE_TREE_SOURCE})
-else()
-    message(FATAL_ERROR "Device tree source not found: ${DEVICE_TREE_SOURCE}")
-endif()
-
-set(DTB ${CMAKE_CURRENT_BINARY_DIR}/device_tree.dtb)
-
-add_custom_command(
-    COMMAND ${DTC_BIN} --quiet --align 1024 -I dts -O dtb
-    -o ${DTB} ${DTS}
-    OUTPUT ${DTB}
-    DEPENDS ${DTS}
-    COMMENT "Creating device tree binary using: ${DTS}"
-)
-add_custom_target(bootloader_dtb ALL DEPENDS ${DTB})
-install(FILES ${DTB} DESTINATION boot)
-
-# ------------------------------------------------------------------------------
-# Bootloader raw binary (.bin)
-# ------------------------------------------------------------------------------
-
-set(BOOTLOADER_BIN ${CMAKE_CURRENT_BINARY_DIR}/bootloader.bin)
-add_custom_command(
-    COMMAND ${CMAKE_OBJCOPY} -v -O binary
-        --set-section-flags .bss=alloc,load,contents
-        ${BOOTLOADER_ELF} ${BOOTLOADER_BIN}
-    OUTPUT ${BOOTLOADER_BIN}
-    DEPENDS ${BOOTLOADER_ELF}
-    COMMENT "Creating bootloader binary: ${BOOTLOADER_BIN}"
-)
-add_custom_target(bootloader_bin ALL DEPENDS ${BOOTLOADER_BIN})
-if(BUILD_IMAGE_FORMAT STREQUAL "bin")
-    install(FILES ${BOOTLOADER_BIN} DESTINATION boot)
-endif()
-
-# ------------------------------------------------------------------------------
-# Bootloader shellcode
-# ------------------------------------------------------------------------------
-
-if(BUILD_IMAGE_FORMAT STREQUAL "shellcode")
-    # TODO
-endif()
-
-# ------------------------------------------------------------------------------
-# Bootloader flattened image tree (.fit)
-# ------------------------------------------------------------------------------
-
-if(BUILD_IMAGE_FORMAT STREQUAL "fit")
-    # TODO: Package up bootloader, device tree, and a kernel into bootloader.fit
-endif()
-
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/bootloader DESTINATION bin)
 install(DIRECTORY ../include/ DESTINATION include/bootloader)

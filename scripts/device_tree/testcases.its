@@ -1,0 +1,53 @@
+/dts-v1/;
+
+/ {
+    description = "Testcase Payload for ScapulaOS";
+    #address-cells = <1>;
+
+    images {
+
+        aarch32_testcases {
+            description = "Testcases for AArch32 execution";
+            data = /incbin/("libaarch32_testcases.a");
+            type = "library";
+            arch = "arm";
+            os = "ScapulaOS";
+            compression = "none";
+        };
+
+        aarch64_testcases {
+            description = "Testcases for AArch64 execution";
+            data = /incbin/("libaarch64_testcases.a");
+            type = "library";
+            arch = "arm64";
+            os = "ScapulaOS";
+            compression = "none";
+        };
+
+        /* fdt { */
+        /*     description = "Platform Flattened Device Tree Binary"; */
+        /*     data = /incbin/("device_tree.dtb"); */
+        /*     type = "flat_dt"; */
+        /*     arch = "arm64"; */
+        /*     [> load = <0x93500000>; <] */
+        /*     [> load = <0xf0300000>; <] */
+        /*     [> load = <0x80000000>; <] */
+        /*     load = <0x84000000>; */
+        /*  */
+        /*     compression = "none"; */
+        /*     hash@1 { */
+        /*         algo = "sha1"; */
+        /*     }; */
+        /* }; */
+
+    };
+
+    configurations {
+        default = "conf@1";
+        conf@1 {
+            description = "Run all aarch64 test cases";
+            kernel = "aarch64_testcases";
+            /* fdt = "fdt"; */
+        };
+    };
+};
