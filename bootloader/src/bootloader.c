@@ -10,6 +10,10 @@
 // ----------------------------------------------------------------------------
 // Bootloader global state variables and accessors
 // ----------------------------------------------------------------------------
+extern uint64_t bootloader_bss_start;
+extern uint64_t bootloader_bss_end;
+extern uint64_t bootloader_heap_start;
+extern uint64_t bootloader_heap_end;
 
 // ARMv8-A does not provide a way to detect which excpetion level you are in
 // if currently executing in EL0. Therefore, this global var tracks the
@@ -138,6 +142,26 @@ boot_ret_t init_el1(void)
 boot_ret_t init_bootloader(void)
 {
     print_banner();
+
+    // Clear BSS
+    uint64_t * buffer_start = (uint64_t *)&bootloader_bss_start;
+    uint64_t * buffer_end = (uint64_t *)&bootloader_bss_end;
+    BOOTLOADER_INFO("Clearing BSS: 0x%016x - 0x%016x", buffer_start, buffer_end);
+    while (buffer_start < buffer_end) {
+        *buffer_start = 0;
+        buffer_start++;
+    }
+
+    // Clear and initialize heap memory
+    buffer_start = (uint64_t *)&bootloader_heap_start;
+    buffer_end = (uint64_t *)&bootloader_heap_end;
+    BOOTLOADER_INFO("Initializing Heap: 0x%016x - 0x%016x", buffer_start, buffer_end);
+    while (buffer_start < buffer_end) {
+        *buffer_start = 0;
+        buffer_start++;
+    }
+    malloc_addblock(&bootloader_heap_start, &bootloader_heap_end - &bootloader_heap_start);
+    malloc_init();
 
     // Initialize g_current_el with whatever exception level the bootloader
     // is launched in

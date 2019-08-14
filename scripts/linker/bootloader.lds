@@ -6,9 +6,8 @@ SECTIONS
     /* Load/entry point (where the previous stage bootloader will place us) */
     . = ${BOOTLOADER_START_ADDRESS};
 
-    . = ALIGN(4);
-    .text : {
     PROVIDE(bootloader_start = .);
+    .text : {
         *start.o (.text)
         *(.text)
     }
@@ -31,9 +30,21 @@ SECTIONS
     }
     PROVIDE(bootloader_bss_end = .);
 
-    /* Bareflank bootloader stack */
+    .common : {
+        *(COMMON)
+    }
+
+    /* Heap */
+    /* TODO: Make this configurable through CMake */
+    . = ALIGN(8);
+    PROVIDE(bootloader_heap_start = .);
+    . += 0x10000; /* 64 KiB heap */
+    PROVIDE(bootloader_heap_end = .);
+
+    /* Stack */
     /* TODO: Make this configurable through CMake */
     . = ALIGN(16);
+    PROVIDE(bootloader_stack_start = .);
     . += 0x10000; /* 64 KiB stack */
     PROVIDE(bootloader_stack_end = .);
 

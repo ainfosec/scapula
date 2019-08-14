@@ -28,6 +28,7 @@ include_dependency(SCAPULA_SOURCE_DEPENDS_DIR dtc)
 include_dependency(SCAPULA_SOURCE_DEPENDS_DIR libfdt)
 include_dependency(SCAPULA_SOURCE_DEPENDS_DIR meson)
 include_dependency(SCAPULA_SOURCE_DEPENDS_DIR libc)
+include_dependency(SCAPULA_SOURCE_DEPENDS_DIR libmemory)
 
 add_subproject(
     shoulder vmm
@@ -50,6 +51,7 @@ add_subproject(
     DEPENDS scapula
     DEPENDS meson
     DEPENDS libc
+    DEPENDS libmemory
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/bootloader/src
     TOOLCHAIN ${SOURCE_TOOLCHAIN_DIR}/gcc_aarch64_vmm.cmake
 )
