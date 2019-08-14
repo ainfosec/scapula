@@ -1,9 +1,7 @@
 #include <stdint.h>
 #include "bootloader.h"
+#include "bootloader_print.h"
 #include "interrupt_vectors.h"
-#include "microlib.h"
-
-#define VECTOR_PRINT(X, ...) bootloader_printf(("[INTERRUPT_VECTOR] --> " X"\n"), ##__VA_ARGS__)
 
 // ----------------------------------------------------------------------------
 // Vectors destined to EL1 (thread mode) from EL1

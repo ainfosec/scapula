@@ -53,7 +53,7 @@ list(APPEND BOOTLOADER_SRC_FILES
     main.c
     bootloader.c
     testcase_loader.c
-    printf.c
+    serial_8250_mini.c
     interrupt_vectors.s
     interrupt_vectors.c
     switch_exception_level.s

@@ -18,3 +18,8 @@ void _putc(char c)
       : "x2"
     );
 }
+
+void _putchar(char c)
+{
+    _putc(c);
+}

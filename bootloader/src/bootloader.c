@@ -1,7 +1,9 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <shoulder/CHeaderGenerator/shoulder.h>
+
 #include "bootloader.h"
+#include "bootloader_print.h"
 #include "interrupt_vectors.h"
 #include "switch_exception_level.h"
 
