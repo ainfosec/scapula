@@ -52,7 +52,7 @@ list(APPEND BOOTLOADER_SRC_FILES
     start.s
     main.c
     bootloader.c
-    microlib.c
+    testcase_loader.c
     printf.c
     interrupt_vectors.s
     interrupt_vectors.c

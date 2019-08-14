@@ -1,0 +1,26 @@
+# Meson Cross-compilation File for GCC AArch64 Builds
+# Requires that aarch64-linux-gnu-* is found in your PATH
+# For more information: http://mesonbuild.com/Cross-compilation.html
+
+[binaries]
+c = 'aarch64-linux-gnu-gcc'
+cpp = 'aarch64-linux-gnu-gcc'
+ar = 'aarch64-linux-gnu-ar'
+strip = 'aarch64-linux-gnu-strip'
+ld = 'aarch64-linux-gnu-ld'
+
+[properties]
+c_args = ['-D__arm__=1']
+c_link_args = []
+cpp_args = ['-D__arm__=1']
+cpp_link_args = []
+
+# Keep this set, or the sanity check won't pass
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'none'
+target_architecture = 'aarch64'
+cpu_family = 'aarch64'
+cpu = 'armv8'
+endian = 'little'

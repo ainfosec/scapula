@@ -1,4 +1,5 @@
-#include <microlib.h>
+#include <malloc.h>
+#include <stdlib.h>
 #include <shoulder/CHeaderGenerator/shoulder.h>
 #include "bootloader.h"
 #include "interrupt_vectors.h"
@@ -102,7 +103,7 @@ boot_ret_t init_el2(void)
 
     aarch64_hcr_el2_rw_enable();
 
-    aarch64_sctlr_el2_mmu_disable();
+    aarch64_sctlr_el2_fieldset_2_m_disable();
 
     BOOTLOADER_INFO("...done");
 }

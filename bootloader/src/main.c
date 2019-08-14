@@ -1,5 +1,4 @@
 #include "bootloader.h"
-#include "microlib.h"
 #include "scapula_aarch64_accessor_macros.h"
 
 // #include <scapula/ReadRes0Generator/ReadRes0Generator.h>
