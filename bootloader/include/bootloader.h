@@ -42,7 +42,7 @@ uint32_t get_current_el(void);
 
 // set_current_el
 //
-// Sets the current exception level that the bootloader is currently exceuting 
+// Sets the current exception level that the bootloader is currently exceuting
 // at. This function should generally be used only by interrupt and exception
 // handlers as a means to indicate to software that the current exception level
 // has changed. This function does NOT change the hardware exception level.
