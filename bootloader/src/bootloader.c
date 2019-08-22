@@ -2,6 +2,7 @@
 #include <shoulder/CHeaderGenerator/shoulder.h>
 #include "bootloader.h"
 #include "interrupt_vectors.h"
+#include "switch_exception_level.h"
 
 // ----------------------------------------------------------------------------
 // Bootloader global state variables and accessors
@@ -66,25 +67,69 @@ void panic(void)
     while(1);
 }
 
-boot_ret_t verify_environment(void)
+boot_ret_t init_el3(void)
 {
-    BOOTLOADER_INFO("Verifying environment");
+    BOOTLOADER_INFO("Initializing EL3 environment...");
 
-    uint32_t current_el = get_current_el();
-    BOOTLOADER_SUBINFO("executing in EL%u", current_el);
-    if (current_el != 2) {
-        BOOTLOADER_ERROR("Bareflank must be launched from EL2, aborting");
-        return BOOT_FAIL;
-    }
+    // Initialize Interrupt Vector Table
+    aarch64_vbar_el3_set((uint64_t)&el3_vector_table);
 
-    uint32_t mmu_status = get_el2_mmu_status();
-    if (mmu_status) {
-        BOOTLOADER_ERROR("MMU is already on, aborting");
-        return BOOT_FAIL;
-    }
-    BOOTLOADER_SUBINFO("MMU is off");
+    // Enable all interrupts
+    aarch64_spsr_el3_fieldset_2_d_enable();
+    aarch64_spsr_el3_fieldset_2_a_enable();
+    aarch64_spsr_el3_fieldset_2_i_enable();
+    aarch64_spsr_el3_fieldset_2_f_enable();
 
-    return BOOT_SUCCESS;
+    aarch64_scr_el3_rw_enable();
+    aarch64_scr_el3_hce_enable();
+    aarch64_scr_el3_ns_enable();
+
+    BOOTLOADER_INFO("...done");
+}
+
+boot_ret_t init_el2(void)
+{
+    BOOTLOADER_INFO("Initializing EL2 environment...");
+
+    // Initialize Interrupt Vector Table
+    aarch64_vbar_el2_set((uint64_t)&el2_vector_table);
+
+    // Enable all interrupts
+    aarch64_spsr_el2_fieldset_2_d_enable();
+    aarch64_spsr_el2_fieldset_2_a_enable();
+    aarch64_spsr_el2_fieldset_2_i_enable();
+    aarch64_spsr_el2_fieldset_2_f_enable();
+
+    aarch64_hcr_el2_rw_enable();
+
+    aarch64_sctlr_el2_mmu_disable();
+
+    BOOTLOADER_INFO("...done");
+}
+
+boot_ret_t init_el1(void)
+{
+    BOOTLOADER_INFO("Initializing EL1 environment...");
+
+    // Initialize Interrupt Vector Table
+    aarch64_vbar_el1_set((uint64_t)&el1_vector_table);
+
+    // Enable all interrupts
+    aarch64_spsr_el1_fieldset_2_d_enable();
+    aarch64_spsr_el1_fieldset_2_a_enable();
+    aarch64_spsr_el1_fieldset_2_i_enable();
+    aarch64_spsr_el1_fieldset_2_f_enable();
+
+    aarch64_sctlr_el1_lsmaoe_enable();
+    aarch64_sctlr_el1_ntlsmd_enable();
+    aarch64_sctlr_el1_span_enable();
+    aarch64_sctlr_el1_eis_enable();
+    aarch64_sctlr_el1_tscxt_enable();
+    aarch64_sctlr_el1_i_enable();
+
+    aarch64_cpacr_el1_fpen_set(0x3);
+
+    BOOTLOADER_INFO("...done");
 }
 
 boot_ret_t init_bootloader(void)
@@ -93,24 +138,17 @@ boot_ret_t init_bootloader(void)
 
     // Initialize g_current_el with whatever exception level the bootloader
     // is launched in
-    // TODO This should be re-written using shoulder functions once shoulder.h
-    // is fully integrated
-    uint32_t current_el = 0;
-    READ_SYSREG_32(CurrentEl, current_el);
-    current_el = current_el >> 2;
+    uint32_t current_el = aarch64_currentel_el_get();
     set_current_el(current_el);
 
-    boot_ret_t status = verify_environment();
-    if (status != BOOT_SUCCESS) return status;
-
-    // Enable 64-bit execution for EL1/EL0
-    // TODO: Shoulder doesn't generate accessors for HCR_EL2 for some reason
-    uint64_t val = 0x80000000;
-    WRITE_SYSREG_64(hcr_el2, val);
-
-    // Setup interrupt/exception vectors for EL2/EL1
-    aarch64_vbar_el1_set((uint64_t)&el1_vector_table);
-    aarch64_vbar_el2_set((uint64_t)&el2_vector_table);
+    switch(current_el) {
+        case 3:
+            init_el3();
+        case 2:
+            init_el2();
+        case 1:
+            init_el1();
+    }
 
     return BOOT_SUCCESS;
 }
