@@ -25,7 +25,7 @@ project(scapula NONE)
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
-set(PYTHONPATH ${SCAPULA_SOURCE_ROOT_DIR}:${VMM_PREFIX_PATH}/lib/python3/dist-packages)
+set(PYTHONPATH ${SCAPULA_SOURCE_ROOT_DIR}:${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages)
 
 set(SCAPULA_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SCAPULA_STAMP_DIR ${SCAPULA_BUILD_DIR}/stamp)
@@ -54,5 +54,6 @@ add_custom_target(generate ALL DEPENDS ${SCAPULA_OUTPUT_STAMP})
 # Install
 # ------------------------------------------------------------------------------
 
+set(CMAKE_INSTALL_MESSAGE NEVER)
 install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR} DESTINATION lib/python3/dist-packages)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output/ DESTINATION src)

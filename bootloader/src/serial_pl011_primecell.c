@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include "bootloader_config.h"
+
 void _putc(char c)
 {
     uintptr_t addr = BOOTLOADER_CONFIG_SERIAL_BASE;
@@ -14,4 +15,9 @@ void _putc(char c)
       : [c] "r"(c), [addr] "r"(addr)
       :
     );
+}
+
+void _putchar(char c)
+{
+    _putc(c);
 }

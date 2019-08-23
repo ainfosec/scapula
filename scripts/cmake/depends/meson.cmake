@@ -1,11 +1,17 @@
 message(STATUS "Including dependency: meson")
 
 set(MESON_SOURCE_DIR ${CACHE_DIR}/meson)
-set(MESON_INSTALL_DIR ${VMM_PREFIX_PATH}/bin/meson)
-set(MESON_BIN ${MESON_INSTALL_DIR}/meson/meson.py)
+set(MESON_INSTALL_DIR ${SCAPULA_AARCH64_INSTALL_PREFIX}/bin/meson)
 
-set(MESON_URL "https://github.com/mesonbuild/meson/releases/download/0.51.1/meson-0.51.1.tar.gz")
-set(MESON_URL_MD5 "48787e391ec5c052799a3dd491f73909")
+set(MESON_BIN ${MESON_INSTALL_DIR}/meson.py
+    CACHE INTERNAL
+    "Path to installed Meson build system binary"
+)
+
+set(MESON_CROSS_FILE ${SCAPULA_SOURCE_DEPENDS_DIR}/meson-cross-file.txt
+    CACHE INTERNAL
+    "Path to Meson cross file for building Meson based dependencies"
+)
 
 download_dependency(
     meson
@@ -14,7 +20,10 @@ download_dependency(
 )
 
 add_dependency(
-    meson vmm
+    meson
+    LOG_CONFIGURE 1
+    LOG_BUILD 1
+    LOG_INSTALL 1
     CONFIGURE_COMMAND
         COMMAND ${CMAKE_COMMAND} -E echo "Configuring meson..."
     BUILD_COMMAND

@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 project(images C CXX)
+include(${SCAPULA_SOURCE_CMAKE_DIR}/init_subproject.cmake)
 
-include(${SOURCE_CMAKE_DIR}/project.cmake)
-init_project()
-
-# Device tree compiler (installed in the VMM prefix as a dependency)
+# Device tree compiler
 unset(DTC_BIN CACHE)
 find_program(DTC_BIN dtc HINTS ${CMAKE_INSTALL_PREFIX}/bin/)
 if(DTC_BIN STREQUAL DTC_BIN-NOTFOUND)

@@ -18,28 +18,13 @@
 
 cmake_minimum_required(VERSION 3.6)
 project(aarch64_testcases C)
-
-# ------------------------------------------------------------------------------
-# Extension setup and configuration
-# ------------------------------------------------------------------------------
-
-include(${SOURCE_CMAKE_DIR}/project.cmake)
-init_project()
-
-# Flags removed from Bareflank's defaults
-string(REPLACE "-std=c11 " "-std=gnu11 " CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-string(REPLACE "--target=${BUILD_TARGET_ARCH}-vmm-elf " "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-
-# Flags added
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mgeneral-regs-only")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-stack-protector")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=armv8-a")
+include(${SCAPULA_SOURCE_CMAKE_DIR}/init_subproject.cmake)
 
 # ------------------------------------------------------------------------------
 # 64-bit test case library
 # ------------------------------------------------------------------------------
 
-file(GLOB_RECURSE AARCH64_TESTCASE_SRC_FILES ${VMM_PREFIX_PATH}/src/*/aarch64/*.c)
+file(GLOB_RECURSE AARCH64_TESTCASE_SRC_FILES ${CMAKE_INSTALL_PREFIX}/src/*/aarch64/*.c)
 
 add_library(aarch64_testcases ${AARCH64_TESTCASE_SRC_FILES})
 

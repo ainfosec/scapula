@@ -1,6 +1,6 @@
 #
 # Bareflank Hypervisor
-# Copyright (C) 2018 Assured Information Security, Inc.
+# Copyright (C) 2015 Assured Information Security, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,18 +16,29 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-cmake_minimum_required(VERSION 3.6)
-project(aarch32_testcases C)
-include(${SCAPULA_SOURCE_CMAKE_DIR}/init_subproject.cmake)
+unset(AARCH64_FLAGS)
+unset(AARCH64_C_FLAGS)
+unset(AARCH64_CXX_FLAGS)
 
-generate_flags(aarch32)
+list(APPEND AARCH64_FLAGS
+    -fpic
+    -fno-stack-protector 
+    -fno-builtin
+    -fno-common
+    -ffreestanding
+    -fno-omit-frame-pointer
+    -mlittle-endian
+    -mstrict-align
+    -march=armv8-a
+    -isystem ${CMAKE_INSTALL_PREFIX}/include
+)
 
-# ------------------------------------------------------------------------------
-# 32-bit test case library
-# ------------------------------------------------------------------------------
+list(APPEND AARCH64_C_FLAGS
+    -std=gnu11
+)
 
-file(GLOB_RECURSE AARCH32_TESTCASE_SRC_FILES ${CMAKE_INSTALL_PREFIX}/src/*/aarch32/*.c)
-
-add_library(aarch32_testcases ${AARCH32_TESTCASE_SRC_FILES})
-
-install(TARGETS aarch32_testcases DESTINATION lib)
+list(APPEND AARCH64_CXX_FLAGS
+    -x c++
+    -std=c++17
+    # -isystem ${CMAKE_INSTALL_PREFIX}/include/c++/v1
+)

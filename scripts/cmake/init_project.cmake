@@ -1,0 +1,6 @@
+include(${CMAKE_SOURCE_DIR}/scripts/cmake/colors.cmake)
+include(${CMAKE_SOURCE_DIR}/scripts/cmake/macros/macros.cmake)
+include_external_config()
+include(${CMAKE_SOURCE_DIR}/scripts/cmake/config/default.cmake)
+include(${CMAKE_SOURCE_DIR}/scripts/cmake/validate.cmake)
+include(${CMAKE_SOURCE_DIR}/scripts/cmake/targets.cmake)

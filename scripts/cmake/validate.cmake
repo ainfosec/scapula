@@ -16,10 +16,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-if(ENABLE_BUILD_SCAPULA AND NOT (BUILD_TARGET_ARCH STREQUAL "aarch64"))
-    invalid_config(
-        "The scapula bootloader extension does not support \
-        the ${BUILD_TARGET_ARCH} architecture (must set \
-        BUILD_TARGET_ARCH=aarch64 to build this extension)"
-    )
-endif()
+function(validate_build)
+    if(BUILD_VALIDATOR_ERROR)
+        message(FATAL_ERROR "Build validation failed")
+    endif()
+endfunction(validate_build)
+
+macro(invalid_config MSG)
+    message(SEND_ERROR "${MSG}")
+    set(BUILD_VALIDATOR_ERROR ON)
+endmacro(invalid_config)
