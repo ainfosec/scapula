@@ -36,18 +36,15 @@ include(${SCAPULA_SOURCE_DEPENDS_DIR}/meson.cmake)
 include(${SCAPULA_SOURCE_DEPENDS_DIR}/libc.cmake)
 include(${SCAPULA_SOURCE_DEPENDS_DIR}/libmemory.cmake)
 include(${SCAPULA_SOURCE_DEPENDS_DIR}/xml_specs.cmake)
-# include(${SCAPULA_SOURCE_DEPENDS_DIR}/shoulder.cmake)
-
-# Generate intrinsics
-add_subproject(
-    shoulder
-    SOURCE_DIR ${SHOULDER_SOURCE_DIR}
-)
+include(${SCAPULA_SOURCE_DEPENDS_DIR}/shoulder.cmake)
 
 # Generate testcase source code
 add_subproject(
     scapula
     DEPENDS shoulder
+    DEPENDS sysreg_spec
+    DEPENDS a64_spec
+    DEPENDS a32_spec
     SOURCE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/scapula
 )
 

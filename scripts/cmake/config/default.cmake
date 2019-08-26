@@ -125,13 +125,6 @@ add_config(
 )
 
 add_config(
-    CONFIG_NAME SHOULDER_SOURCE_DIR
-    CONFIG_TYPE PATH
-    DEFAULT_VAL ${SCAPULA_SOURCE_ROOT_DIR}/../shoulder
-    DESCRIPTION "Path to Shoulder project"
-)
-
-add_config(
     CONFIG_NAME SERIAL_BASE
     CONFIG_TYPE STRING
     DEFAULT_VAL 0x3c000000
@@ -169,6 +162,30 @@ add_config(
     CONFIG_TYPE PATH
     DEFAULT_VAL ${DEFAULT_CACHE_DIR}
     DESCRIPTION "Cache directory"
+    SKIP_VALIDATION
+)
+
+add_config(
+    CONFIG_NAME SYSREG_XML_PATH
+    CONFIG_TYPE PATH
+    DEFAULT_VAL NONE
+    DESCRIPTION "Path to system register XML spec directory (or NONE)"
+    SKIP_VALIDATION
+)
+
+add_config(
+    CONFIG_NAME A32_XML_PATH
+    CONFIG_TYPE PATH
+    DEFAULT_VAL NONE
+    DESCRIPTION "Path to A32 instruction XML spec directory (or NONE)"
+    SKIP_VALIDATION
+)
+
+add_config(
+    CONFIG_NAME A64_XML_PATH
+    CONFIG_TYPE PATH
+    DEFAULT_VAL NONE
+    DESCRIPTION "Path to A64 instruction XML spec directory (or NONE)"
     SKIP_VALIDATION
 )
 

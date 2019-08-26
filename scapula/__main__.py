@@ -2,15 +2,18 @@ import shoulder
 import os
 import shutil
 import copy
+import sys
 
 import scapula.generator
 from scapula.transform import transforms
+from shoulder.cmd_args import parse_cmd_args
 
 # Scapula-specific constants
 scapula_pkg_dir = os.path.abspath(os.getcwd())
 scapula_output_dir = os.path.join(scapula_pkg_dir, "output")
 
 # Shoulder configs
+config = parse_cmd_args(sys.argv[1:])
 shoulder.config.shoulder_output_dir = scapula_output_dir
 
 # Main

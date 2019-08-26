@@ -41,6 +41,7 @@ set(SCAPULA_OUTPUT_STAMP ${SCAPULA_STAMP_DIR}/scapula_output.stamp)
 
 add_custom_command(
     COMMAND PYTHONPATH=${PYTHONPATH} ${Python3_EXECUTABLE} -m scapula
+        -i ${SYSREG_XML_PATH}
     COMMAND cmake -E touch ${SCAPULA_OUTPUT_STAMP}
     OUTPUT ${SCAPULA_OUTPUT_STAMP}
     DEPENDS ${SCAPULA_SRC_FILES}
