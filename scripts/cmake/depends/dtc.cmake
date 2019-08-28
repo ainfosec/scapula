@@ -1,5 +1,7 @@
 message(STATUS "Including dependency: dtc")
 
+set(DTC_URL "https://github.com/jaredwright/dtc/archive/v1.4.6.zip")
+set(DTC_URL_MD5 "540fb180485cd98b73800d39f2993a29")
 set(DTC_SOURCE_DIR ${CACHE_DIR}/dtc)
 set(DTC_BUILD_DIR ${DEPENDS_DIR}/dtc/${AARCH64_TARGET_TRIPLE}/build)
 

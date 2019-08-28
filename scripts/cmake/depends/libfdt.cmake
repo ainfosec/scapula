@@ -1,5 +1,7 @@
 message(STATUS "Including dependency: libfdt")
 
+set(LIBFDT_URL "https://github.com/jaredwright/dtc/archive/v1.4.6.zip")
+set(LIBFDT_URL_MD5 "540fb180485cd98b73800d39f2993a29")
 set(LIBFDT_SOURCE_DIR ${CACHE_DIR}/libfdt)
 set(LIBFDT_BUILD_DIR ${DEPENDS_DIR}/libfdt/aarch64-none-elf/build)
 set(LIBFDT_MAKEFILE_PATCH ${CMAKE_CURRENT_LIST_DIR}/PatchedLibfdtMakefile)
@@ -7,14 +9,16 @@ set(LIBFDT_MAKEFILE_PATCH ${CMAKE_CURRENT_LIST_DIR}/PatchedLibfdtMakefile)
 find_program(LIBFDT_C_COMPILER aarch64-linux-gnu-gcc)
 if(NOT LIBFDT_C_COMPILER)
     message(FATAL_ERROR "Unable to find libfdt compiler: ${LIBFDT_C_COMPILER}")
+else()
+    set(LIBFDT_C_COMPILER ${LIBFDT_C_COMPILER} CACHE INTERNAL "")
 endif()
 
 generate_flags(aarch64)
 
 download_dependency(
     libfdt
-    URL          ${DTC_URL}
-    URL_MD5      ${DTC_URL_MD5}
+    URL          ${LIBFDT_URL}
+    URL_MD5      ${LIBFDT_URL_MD5}
 )
 
 add_dependency(
