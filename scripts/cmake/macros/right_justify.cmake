@@ -1,0 +1,8 @@
+function(right_justify text width output)
+    set(str "")
+    string(LENGTH "${text}" text_len)
+    foreach(i RANGE ${text_len} ${width})
+        set(str " ${str}")
+    endforeach(i)
+    set(${output} ${str} PARENT_SCOPE)
+endfunction(right_justify)

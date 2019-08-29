@@ -16,13 +16,16 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-function(validate_build)
-    if(BUILD_VALIDATOR_ERROR)
-        message(FATAL_ERROR "Build validation failed")
-    endif()
-endfunction(validate_build)
+cmake_minimum_required(VERSION 3.6)
+project(aarch64_testcases C)
+include(${SCAPULA_SOURCE_CMAKE_DIR}/init_subproject.cmake)
 
-macro(invalid_config MSG)
-    message(SEND_ERROR "${MSG}")
-    set(BUILD_VALIDATOR_ERROR ON)
-endmacro(invalid_config)
+# ------------------------------------------------------------------------------
+# 64-bit test case library
+# ------------------------------------------------------------------------------
+
+file(GLOB_RECURSE AARCH64_TESTCASE_SRC_FILES ${CMAKE_INSTALL_PREFIX}/src/*/aarch64/*.c)
+
+add_library(aarch64_testcases ${AARCH64_TESTCASE_SRC_FILES})
+
+install(TARGETS aarch64_testcases DESTINATION lib)

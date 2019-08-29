@@ -45,15 +45,45 @@ set(SCAPULA_SOURCE_DEPENDS_DIR ${SCAPULA_SOURCE_CMAKE_DIR}/depends
     "Scapula cmake dependencies directory"
 )
 
+set(PREFIXES_DIR ${CMAKE_BINARY_DIR}/prefixes
+    CACHE INTERNAL
+    "Prefixes directory"
+)
+
+set(AARCH64_TARGET_TRIPLE aarch64-none-elf
+    CACHE INTERNAL
+    "Target triple for aarch64 bare-metal binaries"
+)
+
+set(SCAPULA_AARCH64_INSTALL_PREFIX ${PREFIXES_DIR}/${AARCH64_TARGET_TRIPLE}
+    CACHE INTERNAL
+    "Install prefix for aarch64 bare-metal binaries"
+)
+
+set(DEPENDS_DIR ${CMAKE_BINARY_DIR}/depends
+    CACHE INTERNAL
+    "External dependencies directory"
+)
+
+set(CMAKE_BUILD_TYPE "Release"
+    CACHE INTERNAL
+    "Defines the build type"
+)
+
+set(CMAKE_VERBOSE_MAKEFILE OFF
+    CACHE INTERNAL
+    "Enables verbose output"
+)
 # ------------------------------------------------------------------------------
 # Configs
 # ------------------------------------------------------------------------------
 
 add_config(
-    CONFIG_NAME ENABLE_BUILD_SCAPULA
-    CONFIG_TYPE BOOL
-    DEFAULT_VAL ON
-    DESCRIPTION "Build the bareflank bootloader"
+    CONFIG_NAME BUILD_TARGET_ARCH
+    CONFIG_TYPE STRING
+    DEFAULT_VAL aarch64
+    DESCRIPTION "The target architecture for the build"
+    OPTIONS aarch64
 )
 
 add_config(
@@ -61,19 +91,19 @@ add_config(
     CONFIG_TYPE STRING
     DEFAULT_VAL bin
     DESCRIPTION "The target image format"
-    OPTIONS bin fit shellcode
+    OPTIONS bin fit
 )
 
 add_config(
     CONFIG_NAME DEVICE_TREE_SOURCE
-    CONFIG_TYPE FILE
-    DEFAULT_VAL ${SCAPULA_DEVICE_TREE_DIR}/jetson-tx1-with-kernel-commandline.dts
-    DESCRIPTION "The device tree source file to be used with this bootloader"
+    CONFIG_TYPE STRING
+    DEFAULT_VAL ${SCAPULA_DEVICE_TREE_DIR}/sail.dts
+    DESCRIPTION "The platform device tree source file"
 )
 
 add_config(
     CONFIG_NAME FLASH_DEV
-    CONFIG_TYPE FILE
+    CONFIG_TYPE STRING
     DEFAULT_VAL /dev/sdb1
     DESCRIPTION "The device node to use for 'make flash' target"
 )
@@ -95,24 +125,18 @@ add_config(
 )
 
 add_config(
-    CONFIG_NAME SHOULDER_SOURCE_DIR
-    CONFIG_TYPE PATH
-    DEFAULT_VAL ${SCAPULA_SOURCE_ROOT_DIR}/../shoulder
-    DESCRIPTION "Path to Shoulder project"
-)
-
-add_config(
     CONFIG_NAME SERIAL_BASE
     CONFIG_TYPE STRING
-    DEFAULT_VAL 0x70006000
-    DESCRIPTION "The base address of an 8250 serial port for printing messages"
+    DEFAULT_VAL 0x3c000000
+    DESCRIPTION "The serial port base address"
 )
 
 add_config(
     CONFIG_NAME SERIAL_DEVICE
     CONFIG_TYPE STRING
-    DEFAULT_VAL 8250_mini
+    DEFAULT_VAL pl011_primecell
     DESCRIPTION "The model of serial device used for printing messages"
+    OPTIONS 8250_uart pl011_primecell
 )
 
 add_config(
@@ -122,27 +146,45 @@ add_config(
     DESCRIPTION "Address for the bootloader to start at"
 )
 
-
-# ------------------------------------------------------------------------------
-# Links
-# ------------------------------------------------------------------------------
-
-set(DTC_URL "https://github.com/dgibson/dtc/archive/v1.4.6.zip"
-    CACHE INTERNAL FORCE
-    "Device tree compiler/libfdt URL"
+set(DEFAULT_CACHE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/../cache
+    CACHE INTERNAL
+    "Default cache directory"
 )
 
-set(DTC_URL_MD5 "540fb180485cd98b73800d39f2993a29"
-    CACHE INTERNAL FORCE
-    "Device tree compiler/libfdt URL MD5 hash"
+if(EXISTS ${DEFAULT_CACHE_DIR})
+    get_filename_component(DEFAULT_CACHE_DIR "${DEFAULT_CACHE_DIR}" ABSOLUTE)
+else()
+    set(DEFAULT_CACHE_DIR ${CMAKE_BINARY_DIR}/cache)
+endif()
+
+add_config(
+    CONFIG_NAME CACHE_DIR
+    CONFIG_TYPE PATH
+    DEFAULT_VAL ${DEFAULT_CACHE_DIR}
+    DESCRIPTION "Cache directory"
+    SKIP_VALIDATION
 )
 
-set(SHOULDER_URL "https://github.com/bareflank/shoulder/archive/master.zip"
-    CACHE INTERNAL FORCE
-    "Shoulder URL"
+add_config(
+    CONFIG_NAME SYSREG_XML_PATH
+    CONFIG_TYPE PATH
+    DEFAULT_VAL NONE
+    DESCRIPTION "Path to system register XML spec directory (or NONE)"
+    SKIP_VALIDATION
 )
 
-set(SHOULDER_URL_MD5 "ff30c732ced81fd3a1143d56b7380513"
-    CACHE INTERNAL FORCE
-    "Shoulder URL MD5 hash"
+add_config(
+    CONFIG_NAME A32_XML_PATH
+    CONFIG_TYPE PATH
+    DEFAULT_VAL NONE
+    DESCRIPTION "Path to A32 instruction XML spec directory (or NONE)"
+    SKIP_VALIDATION
+)
+
+add_config(
+    CONFIG_NAME A64_XML_PATH
+    CONFIG_TYPE PATH
+    DEFAULT_VAL NONE
+    DESCRIPTION "Path to A64 instruction XML spec directory (or NONE)"
+    SKIP_VALIDATION
 )

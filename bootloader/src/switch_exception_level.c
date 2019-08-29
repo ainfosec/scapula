@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "switch_exception_level.h"
-#include "microlib.h"
+#include "bootloader_print.h"
 #include <shoulder/CHeaderGenerator/shoulder.h>
 
 // Low-level helpers in switch_exception_level.s

@@ -1,6 +1,6 @@
 #
 # Bareflank Hypervisor
-# Copyright (C) 2018 Assured Information Security, Inc.
+# Copyright (C) 2015 Assured Information Security, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,13 +16,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-function(validate_build)
-    if(BUILD_VALIDATOR_ERROR)
-        message(FATAL_ERROR "Build validation failed")
-    endif()
-endfunction(validate_build)
-
-macro(invalid_config MSG)
-    message(SEND_ERROR "${MSG}")
-    set(BUILD_VALIDATOR_ERROR ON)
-endmacro(invalid_config)
+include(${CMAKE_CURRENT_LIST_DIR}/add_config.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/add_custom_target_category.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/add_custom_target_info.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/add_dependency.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/add_subproject.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/download_dependency.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/generate_flags.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/include_external_config.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/print_banner.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/print_usage.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/right_justify.cmake)
