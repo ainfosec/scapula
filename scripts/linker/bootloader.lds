@@ -35,17 +35,15 @@ SECTIONS
     }
 
     /* Heap */
-    /* TODO: Make this configurable through CMake */
     . = ALIGN(8);
     PROVIDE(bootloader_heap_start = .);
-    . += 0x10000; /* 64 KiB heap */
+    . += ${BOOTLOADER_HEAP_SIZE};
     PROVIDE(bootloader_heap_end = .);
 
     /* Stack */
-    /* TODO: Make this configurable through CMake */
     . = ALIGN(16);
     PROVIDE(bootloader_stack_start = .);
-    . += 0x10000; /* 64 KiB stack */
+    . += ${BOOTLOADER_STACK_SIZE};
     PROVIDE(bootloader_stack_end = .);
 
     /* Page align the end of the bootloader */

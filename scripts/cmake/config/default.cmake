@@ -146,6 +146,20 @@ add_config(
     DESCRIPTION "Address for the bootloader to start at"
 )
 
+add_config(
+    CONFIG_NAME BOOTLOADER_HEAP_SIZE
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 0x10000
+    DESCRIPTION "Size (in bytes) that the bootloader will use for heap memory"
+)
+
+add_config(
+    CONFIG_NAME BOOTLOADER_STACK_SIZE
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 0x10000
+    DESCRIPTION "Size (in bytes) that the bootloader will use for stack memory"
+)
+
 set(DEFAULT_CACHE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/../cache
     CACHE INTERNAL
     "Default cache directory"
