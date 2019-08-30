@@ -1,7 +1,3 @@
-/*
- * PrimeCell UART PL011 serial driver that prints a single character synchronously
- */
-
 #include <stdint.h>
 #include "cmake_config.h"
 

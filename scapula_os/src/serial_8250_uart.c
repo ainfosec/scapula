@@ -1,7 +1,3 @@
-/*
- * Miniture 8250 serial driver that prints a single character synchronously.
- */
-
 #include <stdint.h>
 #include "cmake_config.h"
 
