@@ -36,7 +36,7 @@ class properties(GadgetProperties):
 def main_function(decorated):
     """
     A decorator gadget that generates a "main" function to be called by
-    Scapula's bootloader
+    Scapula OS's testcase loader
 
     Usage:
         @main_function

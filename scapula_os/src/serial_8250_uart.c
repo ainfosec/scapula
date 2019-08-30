@@ -3,11 +3,11 @@
  */
 
 #include <stdint.h>
-#include "bootloader_config.h"
+#include "cmake_config.h"
 
 void _putc(char c)
 {
-    uintptr_t addr = BOOTLOADER_CONFIG_SERIAL_BASE;
+    uintptr_t addr = CMAKE_CONFIG_SERIAL_BASE;
 
     asm volatile(
       "1:  ldrb  w2, [%[addr], #20]\n"

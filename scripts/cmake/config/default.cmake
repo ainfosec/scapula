@@ -120,7 +120,7 @@ add_config(
     CONFIG_NAME FLASH_PATH
     CONFIG_TYPE PATH
     DEFAULT_VAL boot
-    DESCRIPTION "Path to flash bootloader.bin on target device ${FLASH_DEV}"
+    DESCRIPTION "Path to flash scapula_os.bin on target device ${FLASH_DEV}"
     SKIP_VALIDATION
 )
 
@@ -140,24 +140,24 @@ add_config(
 )
 
 add_config(
-    CONFIG_NAME BOOTLOADER_START_ADDRESS
+    CONFIG_NAME START_ADDRESS
     CONFIG_TYPE STRING
     DEFAULT_VAL 0x80000000
-    DESCRIPTION "Address for the bootloader to start at"
+    DESCRIPTION "Address that Scapula OS starts execution at"
 )
 
 add_config(
-    CONFIG_NAME BOOTLOADER_HEAP_SIZE
+    CONFIG_NAME HEAP_SIZE
     CONFIG_TYPE STRING
     DEFAULT_VAL 0x10000
-    DESCRIPTION "Size (in bytes) that the bootloader will use for heap memory"
+    DESCRIPTION "Size (in bytes) that Scapula OS will use for heap memory"
 )
 
 add_config(
-    CONFIG_NAME BOOTLOADER_STACK_SIZE
+    CONFIG_NAME STACK_SIZE
     CONFIG_TYPE STRING
     DEFAULT_VAL 0x10000
-    DESCRIPTION "Size (in bytes) that the bootloader will use for stack memory"
+    DESCRIPTION "Size (in bytes) that Scapula OS will use for stack memory"
 )
 
 set(DEFAULT_CACHE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/../cache

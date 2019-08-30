@@ -70,7 +70,7 @@
     );
 
 #define SHOULDER_AARCH64_LDR_IMPL(addr)                                        \
-    BOOTLOADER_ERROR("SHOULDER_AARCH64_LDR_IMPL not implemented"); \
+    SCAPULA_ERROR("SHOULDER_AARCH64_LDR_IMPL not implemented"); \
     panic();
 
 #define SHOULDER_AARCH64_MRS_REGISTER_IMPL(sysreg_mnemonic)                    \
@@ -94,7 +94,7 @@
     return val;
 
 #define SHOULDER_AARCH64_MSR_IMMEDIATE_IMPL(sysreg_mnemonic, val)              \
-    BOOTLOADER_ERROR("SHOULDER_AARCH64_MSR_IMMEDIATE_IMPL not implemented"); \
+    SCAPULA_ERROR("SHOULDER_AARCH64_MSR_IMMEDIATE_IMPL not implemented"); \
     panic();
 
 #define SHOULDER_AARCH64_MSR_REGISTER_IMPL(sysreg_mnemonic, val)               \
@@ -115,7 +115,7 @@
     );
 
 #define SHOULDER_AARCH64_STR_IMPL(addr, val)                                   \
-    BOOTLOADER_ERROR("SHOULDER_AARCH64_STR_IMPL not implemented"); \
+    SCAPULA_ERROR("SHOULDER_AARCH64_STR_IMPL not implemented"); \
     panic();
 
 #endif

@@ -77,15 +77,15 @@ def testcase(decorated):
 
         if properties.verbose == True:
             banner_text = "**********************************************"
-            contents.write("BOOTLOADER_PRINT(\"" + banner_text + "\");\n")
+            contents.write("SCAPULA_PRINT(\"" + banner_text + "\");\n")
 
             testcase_text = "Running: " + testcase_name
-            contents.write("BOOTLOADER_PRINT(\"" + testcase_text + "\");\n")
+            contents.write("SCAPULA_PRINT(\"" + testcase_text + "\");\n")
 
         decorated(generator, contents, *args, **kwargs)
 
         if properties.verbose == True:
-            contents.write("BOOTLOADER_PRINT(\"... test complete\");\n")
+            contents.write("SCAPULA_PRINT(\"... test complete\");\n")
 
         lines = contents.getvalue().splitlines()
 

@@ -4,9 +4,9 @@ ENTRY(_header)
 SECTIONS
 {
     /* Load/entry point (where the previous stage bootloader will place us) */
-    . = ${BOOTLOADER_START_ADDRESS};
+    . = ${START_ADDRESS};
 
-    PROVIDE(bootloader_start = .);
+    PROVIDE(scapula_os_start = .);
     .text : {
         *start.o (.text)
         *(.text)
@@ -24,11 +24,11 @@ SECTIONS
 
     /* Uninitialised data */
     . = ALIGN(8);
-    PROVIDE(bootloader_bss_start = .);
+    PROVIDE(scapula_os_bss_start = .);
     .bss (NOLOAD) : {
         *(.bss) . = ALIGN(8);
     }
-    PROVIDE(bootloader_bss_end = .);
+    PROVIDE(scapula_os_bss_end = .);
 
     .common : {
         *(COMMON)
@@ -36,19 +36,19 @@ SECTIONS
 
     /* Heap */
     . = ALIGN(8);
-    PROVIDE(bootloader_heap_start = .);
-    . += ${BOOTLOADER_HEAP_SIZE};
-    PROVIDE(bootloader_heap_end = .);
+    PROVIDE(scapula_os_heap_start = .);
+    . += ${HEAP_SIZE};
+    PROVIDE(scapula_os_heap_end = .);
 
     /* Stack */
     . = ALIGN(16);
-    PROVIDE(bootloader_stack_start = .);
-    . += ${BOOTLOADER_STACK_SIZE};
-    PROVIDE(bootloader_stack_end = .);
+    PROVIDE(scapula_os_stack_start = .);
+    . += ${STACK_SIZE};
+    PROVIDE(scapula_os_stack_end = .);
 
-    /* Page align the end of the bootloader */
+    /* Page align the end of the Scapula OS binary */
     . = ALIGN(512);
-    PROVIDE(bootloader_end = .);
+    PROVIDE(scapula_os_end = .);
 
     /DISCARD/ : { *(.dynstr*) }
     /DISCARD/ : { *(.dynamic*) }

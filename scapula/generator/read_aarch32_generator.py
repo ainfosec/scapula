@@ -22,4 +22,4 @@ class ReadAarch32Generator(ScapulaGenerator):
         return regs
 
     def generate_testcase(self, outfile, reg):
-        read_all_fields(outfile, reg, el=1)
+        read_all_fields(outfile, reg)

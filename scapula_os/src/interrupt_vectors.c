@@ -1,7 +1,11 @@
 #include <stdint.h>
-#include "bootloader.h"
-#include "bootloader_print.h"
-#include "interrupt_vectors.h"
+#include "exception_level.h"
+#include "print.h"
+#include "panic.h"
+
+// Function pointer type for interrupt vectors to return excecution through
+// previous stack pointer and link register
+typedef void(*vector_return_fn)(uintptr_t sp, uintptr_t lr);
 
 // ----------------------------------------------------------------------------
 // Vectors destined to EL1 (thread mode) from EL1

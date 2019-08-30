@@ -48,7 +48,7 @@ install(FILES ${PLATFORM_DTB} DESTINATION boot)
 
 # ------------------------------------------------------------------------------
 # Testcase flattened image tree (.fit)
-# Contains all sub-images to be used as the payload for the scapula bootloader
+# Contains all sub-images to be used as the payload for Scapula OS 
 # ------------------------------------------------------------------------------
 
 set(TESTCASE_ITS ${SCAPULA_SOURCE_ROOT_DIR}/scripts/device_tree/testcases.its)
@@ -67,22 +67,22 @@ add_custom_target(testcase_itb_target ALL DEPENDS ${TESTCASE_ITB})
 install(FILES ${TESTCASE_ITB} DESTINATION boot)
 
 # ------------------------------------------------------------------------------
-# Bootloader raw binary (.bin)
+# Scapula OS raw binary (.bin)
 # The main executable to be loaded on the target platform
 # ------------------------------------------------------------------------------
 
-set(BOOTLOADER_BIN ${CMAKE_CURRENT_BINARY_DIR}/bootloader.bin)
-set(BOOTLOADER_ELF ${CMAKE_INSTALL_PREFIX}/bin/bootloader)
+set(SCAPULA_OS_BIN ${CMAKE_CURRENT_BINARY_DIR}/scapula_os.bin)
+set(SCAPULA_OS_ELF ${CMAKE_INSTALL_PREFIX}/bin/scapula_os)
 
 add_custom_command(
     COMMAND ${OBJCOPY_BIN} -v -O binary
         --set-section-flags .bss=alloc,load,contents
-        ${BOOTLOADER_ELF} ${BOOTLOADER_BIN}
-    OUTPUT ${BOOTLOADER_BIN}
-    DEPENDS ${BOOTLOADER_ELF}
-    COMMENT "Creating bootloader binary: ${BOOTLOADER_BIN}"
+        ${SCAPULA_OS_ELF} ${SCAPULA_OS_BIN}
+        OUTPUT ${SCAPULA_OS_BIN}
+        DEPENDS ${SCAPULA_OS_ELF}
+        COMMENT "Creating scapula_os binary: ${SCAPULA_OS_BIN}"
 )
 
-add_custom_target(bootloader_bin ALL DEPENDS ${BOOTLOADER_BIN})
+add_custom_target(scapula_os_bin ALL DEPENDS ${SCAPULA_OS_BIN})
 
-install(FILES ${BOOTLOADER_BIN} DESTINATION boot)
+install(FILES ${SCAPULA_OS_BIN} DESTINATION boot)

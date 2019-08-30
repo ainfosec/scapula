@@ -17,50 +17,51 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 cmake_minimum_required(VERSION 3.6)
-project(bootloader C ASM-ATT)
+project(scapula_os C ASM-ATT)
 include(${SCAPULA_SOURCE_CMAKE_DIR}/init_subproject.cmake)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../include)
 
-list(APPEND BOOTLOADER_SRC_FILES
+list(APPEND SRC_FILES
     start.s
     main.c
-    bootloader.c
+    init.c
+    panic.c
     interrupt_vectors.s
     interrupt_vectors.c
-    switch_exception_level.s
-    switch_exception_level.c
+    exception_level.s
+    exception_level.c
 )
 
 if(SERIAL_DEVICE STREQUAL "8250_uart")
-    list(APPEND BOOTLOADER_SRC_FILES
+    list(APPEND SRC_FILES
         serial_8250_uart.c
     )
 elseif(SERIAL_DEVICE STREQUAL "pl011_primecell")
-    list(APPEND BOOTLOADER_SRC_FILES
+    list(APPEND SRC_FILES
         serial_pl011_primecell.c
     )
 else()
     message(FATAL_ERROR "Serial device not found: ${SERIAL_DEVICE}")
 endif()
 
-add_executable(bootloader ${BOOTLOADER_SRC_FILES})
+add_executable(scapula_os ${SRC_FILES})
 
-target_compile_definitions(bootloader
-    PRIVATE BOOTLOADER_CONFIG_SERIAL_BASE=${SERIAL_BASE}
+target_compile_definitions(scapula_os
+    PRIVATE CMAKE_CONFIG_SERIAL_BASE=${SERIAL_BASE}
 )
 
-if(NOT BOOTLOADER_START_ADDRESS)
-    message(FATAL_ERROR "Bootloader start address has not been set")
+if(NOT START_ADDRESS)
+    message(FATAL_ERROR "Scapula OS start address has not been set")
 endif()
 configure_file(
-    "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/bootloader.lds"
-    "${CMAKE_CURRENT_BINARY_DIR}/bootloader.lds"
+    "${SCAPULA_SOURCE_ROOT_DIR}/scripts/linker/scapula_os.lds"
+    "${CMAKE_CURRENT_BINARY_DIR}/scapula_os.lds"
 )
 
-set(BOOTLOADER_LINKER_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/bootloader.lds")
-set_target_properties(bootloader PROPERTIES LINK_DEPENDS ${BOOTLOADER_LINKER_SCRIPT})
-target_link_libraries(bootloader -T ${BOOTLOADER_LINKER_SCRIPT})
+set(LINKER_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/scapula_os.lds")
+set_target_properties(scapula_os PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+target_link_libraries(scapula_os -T ${LINKER_SCRIPT})
 
 list(APPEND LIBRARIES
     ${CMAKE_INSTALL_PREFIX}/lib/libfdt.a
@@ -69,7 +70,7 @@ list(APPEND LIBRARIES
     ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a
 )
 
-target_link_libraries(bootloader ${LIBRARIES})
+target_link_libraries(scapula_os ${LIBRARIES})
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/bootloader DESTINATION bin)
-install(DIRECTORY ../include/ DESTINATION include/bootloader)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/scapula_os DESTINATION bin)
+install(DIRECTORY ../include/ DESTINATION include/scapula_os)
