@@ -58,10 +58,11 @@ class ScapulaGenerator(shoulder.generator.abstract_generator.AbstractGenerator):
 
     @shoulder.gadget.license
     def _generate_all(self, outfile, registers):
-        outfile.write("#include \"../include/shoulder.h\"\n")
-        outfile.write("#include <bootloader/bootloader.h>\n")
-        outfile.write("#include <bootloader/bootloader_print.h>\n")
-        outfile.write("#include <bootloader/switch_exception_level.h>\n\n")
+        outfile.write("#include <scapula_os/exception_level.h>\n")
+        outfile.write("#include <scapula_os/print.h>\n")
+        outfile.write("#include <scapula_os/panic.h>\n")
+        outfile.write("#include <scapula_os/scapula_aarch64_accessor_macros.h>\n")
+        outfile.write("#include \"../include/shoulder.h\"\n\n")
 
         self._generate_test_cases(outfile, registers)
         self._generate_main(outfile, registers)

@@ -1,6 +1,6 @@
 add_custom_target(info)
 
-add_custom_target_category("Scapula Bootloader")
+add_custom_target_category("Scapula OS")
 
 add_custom_target(flash
     COMMAND mount ${FLASH_DEV} ${FLASH_MOUNT}

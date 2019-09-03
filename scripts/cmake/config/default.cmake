@@ -1,21 +1,3 @@
-#
-# Bareflank Hypervisor
-# Copyright (C) 2018 Assured Information Security, Inc.
-#
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2.1 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 # ------------------------------------------------------------------------------
 # Constants
 # ------------------------------------------------------------------------------
@@ -120,7 +102,7 @@ add_config(
     CONFIG_NAME FLASH_PATH
     CONFIG_TYPE PATH
     DEFAULT_VAL boot
-    DESCRIPTION "Path to flash bootloader.bin on target device ${FLASH_DEV}"
+    DESCRIPTION "Path to flash scapula_os.bin on target device ${FLASH_DEV}"
     SKIP_VALIDATION
 )
 
@@ -140,10 +122,24 @@ add_config(
 )
 
 add_config(
-    CONFIG_NAME BOOTLOADER_START_ADDRESS
+    CONFIG_NAME START_ADDRESS
     CONFIG_TYPE STRING
     DEFAULT_VAL 0x80000000
-    DESCRIPTION "Address for the bootloader to start at"
+    DESCRIPTION "Address that Scapula OS starts execution at"
+)
+
+add_config(
+    CONFIG_NAME HEAP_SIZE
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 0x10000
+    DESCRIPTION "Size (in bytes) that Scapula OS will use for heap memory"
+)
+
+add_config(
+    CONFIG_NAME STACK_SIZE
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 0x10000
+    DESCRIPTION "Size (in bytes) that Scapula OS will use for stack memory"
 )
 
 set(DEFAULT_CACHE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/../cache
