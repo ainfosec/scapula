@@ -32,6 +32,16 @@ set(PREFIXES_DIR ${CMAKE_BINARY_DIR}/prefixes
     "Prefixes directory"
 )
 
+set(AARCH32_TARGET_TRIPLE arm-none-elf
+    CACHE INTERNAL
+    "Target triple for aarch32 bare-metal binaries"
+)
+
+set(SCAPULA_AARCH32_INSTALL_PREFIX ${PREFIXES_DIR}/${AARCH32_TARGET_TRIPLE}
+    CACHE INTERNAL
+    "Install prefix for aarch32 bare-metal binaries"
+)
+
 set(AARCH64_TARGET_TRIPLE aarch64-none-elf
     CACHE INTERNAL
     "Target triple for aarch64 bare-metal binaries"
@@ -40,6 +50,16 @@ set(AARCH64_TARGET_TRIPLE aarch64-none-elf
 set(SCAPULA_AARCH64_INSTALL_PREFIX ${PREFIXES_DIR}/${AARCH64_TARGET_TRIPLE}
     CACHE INTERNAL
     "Install prefix for aarch64 bare-metal binaries"
+)
+
+set(HOST_TARGET_TRIPLE ${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_HOST_SYSTEM_NAME}-elf
+    CACHE INTERNAL
+    "Target triple for host system binaries"
+)
+
+set(SCAPULA_HOST_INSTALL_PREFIX ${PREFIXES_DIR}/${HOST_TARGET_TRIPLE}
+    CACHE INTERNAL
+    "Install prefix for host system binaries"
 )
 
 set(DEPENDS_DIR ${CMAKE_BINARY_DIR}/depends
@@ -56,6 +76,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF
     CACHE INTERNAL
     "Enables verbose output"
 )
+
 # ------------------------------------------------------------------------------
 # Configs
 # ------------------------------------------------------------------------------
@@ -131,7 +152,7 @@ add_config(
 add_config(
     CONFIG_NAME HEAP_SIZE
     CONFIG_TYPE STRING
-    DEFAULT_VAL 0x10000
+    DEFAULT_VAL 0x200000
     DESCRIPTION "Size (in bytes) that Scapula OS will use for heap memory"
 )
 
