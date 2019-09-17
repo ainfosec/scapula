@@ -4,6 +4,8 @@
 #include "panic.h"
 #include <shoulder/CHeaderGenerator/shoulder.h>
 
+extern void _putc();
+
 // Low-level helpers in switch_exception_level.s
 // These are private implmentation details of this file file only
 void _switch_el3_to_el2(void);
@@ -21,7 +23,7 @@ void switch_to_el0(uint64_t current_el);
 // ARMv8-A does not provide a way to detect which excpetion level you are in
 // if currently executing in EL0. Therefore, this global var tracks the
 // current EL
-static volatile uint32_t g_current_el = 0;
+static volatile uint32_t g_current_el = 0xffffffff;
 
 uint32_t get_current_el(void)
 {
@@ -68,7 +70,6 @@ void switch_to_el2(uint64_t current_el)
             return;
         case 3:
             aarch64_spsr_el3_fieldset_2_m_3_0__set(0x9);
-
             SCAPULA_INFO("Switching EL3->EL2");
             _switch_el3_to_el2();
             SCAPULA_INFO("...done");
@@ -154,6 +155,7 @@ void switch_to_el(uint32_t target_el)
             switch_to_el3(current_el);
             break;
         default:
+            break;
             panic();
     }
 }

@@ -3,6 +3,15 @@
 
 void panic(void)
 {
-    print_panic();
+    SCAPULA_PRINT("--------------------------------------------------------");
+    SCAPULA_PRINT("|\\     /||\\     /|       (  ___  )|\\     /|       / )");
+    SCAPULA_PRINT("| )   ( || )   ( |       | (   ) || )   ( |   _  / /");
+    SCAPULA_PRINT("| |   | || (___) | _____ | |   | || (___) |  (_)( (");
+    SCAPULA_PRINT("| |   | ||  ___  |(_____)| |   | ||  ___  |     | |");
+    SCAPULA_PRINT("| |   | || (   ) |       | |   | || (   ) |   _ ( (");
+    SCAPULA_PRINT("| (___) || )   ( |       | (___) || )   ( |  (_) \\ \\");
+    SCAPULA_PRINT("(_______)|/     \\|       (_______)|/     \\|       \\_)");
+    SCAPULA_PRINT("          Scapula OS terminated unexpectedly");
+    SCAPULA_PRINT("--------------------------------------------------------");
     while(1);
 }
