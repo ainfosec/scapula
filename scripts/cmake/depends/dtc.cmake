@@ -6,6 +6,11 @@ set(DTC_SOURCE_DIR ${CACHE_DIR}/dtc)
 set(DTC_BUILD_DIR ${DEPENDS_DIR}/dtc/${AARCH64_TARGET_TRIPLE}/build)
 set(DTC_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/bin)
 
+set(DTC_BIN ${DTC_INSTALL_DIR}/dtc
+    CACHE INTERNAL
+    "Path to installed device tree compiler binary"
+)
+
 download_dependency(
     dtc
     URL          ${DTC_URL}

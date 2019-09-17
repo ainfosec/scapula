@@ -16,9 +16,9 @@ scapula_output_dir = os.path.join(scapula_pkg_dir, "output")
 config = parse_cmd_args(sys.argv[1:])
 shoulder.config.shoulder_output_dir = scapula_output_dir
 
-# Main
 regs = shoulder.parser.parse_registers(shoulder.config.xml_register_dir)
 
+# Run Generators
 for key, g in scapula.generator.generators.items():
     sub_outdir = os.path.join(scapula_output_dir, str(g.__class__.__name__))
     sub_include_dir = os.path.join(sub_outdir, "include")
@@ -35,3 +35,25 @@ for key, g in scapula.generator.generators.items():
     shoulder.config.encoded_functions = True
 
     g.generate(copy.deepcopy(regs), sub_outdir)
+
+# Create a main() function that runs all aarch64 generators
+with open(os.path.join(scapula_output_dir, "aarch64_main.c"), "w") as outfile:
+    outfile.write("#include <scapula_os/exception_level.h>\n")
+    outfile.write("#include <shoulder/CHeaderGenerator/shoulder.h>\n")
+
+    for key, g in scapula.generator.generators.items():
+        outfile.write("void " + str(g.__class__.__name__) + "_run();\n")
+
+    outfile.write("\nvoid main()\n{\n")
+    outfile.write("\tset_current_el(aarch64_currentel_el_get());\n")
+
+    for key, g in scapula.generator.generators.items():
+        if g.execution_state == "aarch64":
+            outfile.write("\t" + str(g.__class__.__name__) + "_run();\n")
+    outfile.write("}")
+
+# Create a main() function that runs all aarch32 generators
+with open(os.path.join(scapula_output_dir, "aarch32_main.c"), "w") as outfile:
+    outfile.write("\nvoid main()\n{\n")
+    # TODO
+    outfile.write("}")

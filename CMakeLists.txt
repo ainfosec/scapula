@@ -71,13 +71,26 @@ add_subproject(
     INSTALL_PREFIX ${SCAPULA_AARCH64_INSTALL_PREFIX}
 )
 
-# Bundle up all of the above into a deployable image(s)
+# Bundle up all of the above as a .fit image contained in a linkable archive
 add_subproject(
     images
     DEPENDS dtc
     DEPENDS test_cases_aarch32
     DEPENDS test_cases_aarch64
     SOURCE_DIR ${SCAPULA_SOURCE_ROOT_DIR}/scripts/cmake/build_generated/images
+    TOOLCHAIN ${SCAPULA_SOURCE_CMAKE_DIR}/toolchain/aarch64-linux-gnu-gcc.cmake
+    INSTALL_PREFIX ${SCAPULA_AARCH64_INSTALL_PREFIX}
+)
+
+# Build the Scapula Loader
+add_subproject(
+    scapula_loader
+    DEPENDS dtc
+    DEPENDS libfdt
+    DEPENDS shoulder
+    DEPENDS scapula_os_aarch64
+    DEPENDS images
+    SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/scapula_loader
     TOOLCHAIN ${SCAPULA_SOURCE_CMAKE_DIR}/toolchain/aarch64-linux-gnu-gcc.cmake
     INSTALL_PREFIX ${SCAPULA_AARCH64_INSTALL_PREFIX}
 )

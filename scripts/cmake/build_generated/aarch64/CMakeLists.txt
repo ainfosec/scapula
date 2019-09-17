@@ -1,9 +1,23 @@
 cmake_minimum_required(VERSION 3.6)
-project(aarch64_testcases C)
+project(aarch64_testcases C ASM-ATT)
 include(${SCAPULA_SOURCE_CMAKE_DIR}/init_subproject.cmake)
 
-file(GLOB_RECURSE AARCH64_TESTCASE_SRC_FILES ${CMAKE_INSTALL_PREFIX}/src/*/aarch64/*.c)
+file(GLOB_RECURSE AARCH64_TESTCASE_SRC_FILES ${SCAPULA_HOST_INSTALL_PREFIX}/src/*/aarch64/*.c)
 
-add_library(aarch64_testcases ${AARCH64_TESTCASE_SRC_FILES})
+add_executable(aarch64_testcases
+    start.s
+    ${SCAPULA_HOST_INSTALL_PREFIX}/src/aarch64_main.c
+    ${AARCH64_TESTCASE_SRC_FILES}
+)
 
-install(TARGETS aarch64_testcases DESTINATION lib)
+target_include_directories(aarch64_testcases
+    PRIVATE ${CMAKE_INSTALL_PREFIX}/include
+)
+
+target_link_libraries(aarch64_testcases
+    ${CMAKE_INSTALL_PREFIX}/lib/libc.a
+    ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a
+    ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a
+    ${CMAKE_INSTALL_PREFIX}/lib/libscapula_os.a
+)
+install(TARGETS aarch64_testcases DESTINATION bin)

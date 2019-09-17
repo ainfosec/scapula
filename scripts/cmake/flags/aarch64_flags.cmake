@@ -3,7 +3,7 @@ unset(AARCH64_C_FLAGS)
 unset(AARCH64_CXX_FLAGS)
 
 list(APPEND AARCH64_FLAGS
-    -fpic
+    -fpie
     -fno-stack-protector 
     -fno-builtin
     -fno-common
