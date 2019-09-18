@@ -4,6 +4,12 @@ set(DTC_URL "https://github.com/jaredwright/dtc/archive/v1.4.6.zip")
 set(DTC_URL_MD5 "540fb180485cd98b73800d39f2993a29")
 set(DTC_SOURCE_DIR ${CACHE_DIR}/dtc)
 set(DTC_BUILD_DIR ${DEPENDS_DIR}/dtc/${AARCH64_TARGET_TRIPLE}/build)
+set(DTC_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/bin)
+
+set(DTC_BIN ${DTC_INSTALL_DIR}/dtc
+    CACHE INTERNAL
+    "Path to installed device tree compiler binary"
+)
 
 download_dependency(
     dtc
@@ -15,5 +21,5 @@ add_dependency(
     dtc
     CONFIGURE_COMMAND   ${CMAKE_COMMAND} -E copy_directory ${DTC_SOURCE_DIR} ${DTC_BUILD_DIR}
     BUILD_COMMAND       make -C ${DTC_BUILD_DIR} NO_PYTHON=1
-    INSTALL_COMMAND     ${CMAKE_COMMAND} -E copy ${DTC_BUILD_DIR}/dtc ${SCAPULA_AARCH64_INSTALL_PREFIX}/bin/dtc
+    INSTALL_COMMAND     ${CMAKE_COMMAND} -E copy ${DTC_BUILD_DIR}/dtc ${DTC_INSTALL_DIR}/dtc
 )

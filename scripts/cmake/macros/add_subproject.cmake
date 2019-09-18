@@ -9,7 +9,7 @@
 #
 #
 function(add_subproject NAME)
-    set(oneVal SOURCE_DIR TOOLCHAIN)
+    set(oneVal SOURCE_DIR TOOLCHAIN INSTALL_PREFIX)
     set(multiVal DEPENDS)
     cmake_parse_arguments(ARG "" "${oneVal}" "${multiVal}" ${ARGN})
 
@@ -17,6 +17,10 @@ function(add_subproject NAME)
         set(SOURCE_DIR ${ARG_SOURCE_DIR})
     else()
         message(FATAL_ERROR "add_subproject: SOURCE_DIR not provided")
+    endif()
+
+    if(NOT ARG_INSTALL_PREFIX)
+        set(ARG_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
     endif()
 
     generate_flags(aarch64)
@@ -30,7 +34,7 @@ function(add_subproject NAME)
     endforeach()
 
     list(APPEND CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX=${SCAPULA_AARCH64_INSTALL_PREFIX}
+        -DCMAKE_INSTALL_PREFIX=${ARG_INSTALL_PREFIX}
         -DCMAKE_INSTALL_MESSAGE=LAZY
         -DCMAKE_TARGET_MESSAGES=OFF
         -DCMAKE_VERBOSE_MAKEFILE=${CMAKE_VERBOSE_MAKEFILE}
@@ -45,10 +49,10 @@ function(add_subproject NAME)
 
     ExternalProject_Add(
         ${NAME}
-        PREFIX          ${CMAKE_BINARY_DIR}/${NAME}/${AARCH64_TARGET_TRIPLE}
-        STAMP_DIR       ${CMAKE_BINARY_DIR}/${NAME}/${AARCH64_TARGET_TRIPLE}/stamp
-        TMP_DIR         ${CMAKE_BINARY_DIR}/${NAME}/${AARCH64_TARGET_TRIPLE}/tmp
-        BINARY_DIR      ${CMAKE_BINARY_DIR}/${NAME}/${AARCH64_TARGET_TRIPLE}/build
+        PREFIX          ${CMAKE_BINARY_DIR}/${NAME}/
+        STAMP_DIR       ${CMAKE_BINARY_DIR}/${NAME}/stamp
+        TMP_DIR         ${CMAKE_BINARY_DIR}/${NAME}/tmp
+        BINARY_DIR      ${CMAKE_BINARY_DIR}/${NAME}/build
         SOURCE_DIR      ${SOURCE_DIR}
         CMAKE_ARGS      ${CMAKE_ARGS}
         DEPENDS         ${ARG_DEPENDS}

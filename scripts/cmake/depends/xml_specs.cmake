@@ -4,7 +4,7 @@
 
 message(STATUS "Including dependency: ARM XML system register specification")
 
-set(SYSREG_XML_INSTALL_DIR ${SCAPULA_AARCH64_INSTALL_PREFIX}/src/sysreg_spec)
+set(SYSREG_XML_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/src/sysreg_spec)
 set(SYSREG_SPEC_VERSION ARMv85A-SysReg-00bet9)
 set(SYSREG_XML_SUBDIR SysReg_v85A_xml-00bet9)
 set(SYSREG_SPEC_URL "https://developer.arm.com/-/media/developer/products/architecture/armv8-a-architecture/${SYSREG_SPEC_VERSION}.tar.gz")
@@ -48,7 +48,7 @@ endif()
 
 message(STATUS "Including dependency: ARM XML A32 ISA specification")
 
-set(A32_XML_INSTALL_DIR ${SCAPULA_AARCH64_INSTALL_PREFIX}/src/a32_spec)
+set(A32_XML_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/src/a32_spec)
 set(A32_SPEC_VERSION AArch32_v85A_ISA_xml_00bet9)
 set(A32_XML_SUBDIR ISA_v85A_AArch32_xml_00bet9)
 set(A32_SPEC_URL "https://developer.arm.com/-/media/developer/products/architecture/armv8-a-architecture/${A32_SPEC_VERSION}.tar.gz")
@@ -96,7 +96,7 @@ endif()
 
 message(STATUS "Including dependency: ARM XML A64 ISA specification")
 
-set(A64_XML_INSTALL_DIR ${SCAPULA_AARCH64_INSTALL_PREFIX}/src/a64_spec)
+set(A64_XML_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/src/a64_spec)
 set(A64_SPEC_VERSION A64_v85A_ISA_xml_00bet9)
 set(A64_XML_SUBDIR ISA_v85A_A64_xml_00bet9)
 set(A64_SPEC_URL "https://developer.arm.com/-/media/developer/products/architecture/armv8-a-architecture/${A64_SPEC_VERSION}.tar.gz")

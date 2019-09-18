@@ -1,42 +1,6 @@
-.section ".text"
-
-/*
- * Mock linux-kernel header to trick previous stage bootloader that we're Linux
- */
-.globl _header
-_header:
-        b       _scapula_os_start
-        .long   0               // reserved
-        .quad   0               // Image load offset from start of RAM
-        .quad   0x2000000       // Image size, little endian (32MiB)
-        .quad   0               // reserved
-        .quad   0               // reserved
-        .quad   0               // reserved
-        .quad   0               // reserved
-        .byte   0x41            // Magic number, "ARM\x64"
-        .byte   0x52
-        .byte   0x4d
-        .byte   0x64
-        .word   0                 // reserved
-/**
- * Scapula OS start of day code.
- * This is the first code that executes after we're launched by the previous
- * stage bootloader. Used only to set up a sane C environment for 
- * scapula_os_main()
- *
- * x0 = Address of a flattened device tree or .fit image passed in from
- *      prevoius stage bootloader
- */
-.global _scapula_os_start
-_scapula_os_start:
-    // Reminder: x0 needs to be preserved (needed by scapula_os_main())
-    // Setup the Scapula OS stack (shared between all exception levels)
-    ldr     x1, =scapula_os_stack_end
-    mov     x2, sp
-    mov     x3, lr
-    mov     sp, x1
-
-    // Stash previous stage bootloader
+.global _start
+_start:
+    // Stash previous stage loader
     stp     x0, x1, [sp, #-16]!
     stp     x2, x3, [sp, #-16]!
     stp     x4, x5, [sp, #-16]!
@@ -86,10 +50,11 @@ _scapula_os_start:
     mov     x29, xzr
     mov     x30, xzr
 
-    // Run the Scapula OS main routine. This shouldn't return.
-    bl      scapula_os_main
+    // Run the main routine.
+    ldr     x0, =main
+    blr     x0
 
-    // On failure, return to previous stage bootloader
+    // Return to previous loader
     ldp     x30, xzr, [sp], #16
     ldp     x28, x29, [sp], #16
     ldp     x26, x27, [sp], #16
@@ -106,7 +71,5 @@ _scapula_os_start:
     ldp     x4, x5, [sp], #16
     ldp     x2, x3, [sp], #16
     ldp     x0, x1, [sp], #16
-
-    mov     sp, x2
-    mov     lr, x3
+    
     ret

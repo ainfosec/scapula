@@ -4,12 +4,16 @@ else()
     set(CMAKE_INSTALL_PREFIX "$ENV{CMAKE_INSTALL_PREFIX}")
 endif()
 
-set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CROSS_COMPILE_TRIPLE arm-linux-gnueabihf)
 
 string(CONCAT LD_FLAGS
     "-L${CMAKE_INSTALL_PREFIX}/lib "
+    "--no-dynamic-linker "
     "-nostdlib "
+    "-pie "
+    "-static"
 )
 
 find_program(CMAKE_C_COMPILER ${CROSS_COMPILE_TRIPLE}-gcc)
@@ -39,6 +43,11 @@ if(NOT AR_BIN)
     message(FATAL_ERROR "Unable to find ${CROSS_COMPILE_TRIPLE}-ar")
 endif()
 
+find_program(OBJCOPY_BIN ${CROSS_COMPILE_TRIPLE}-objcopy)
+if(NOT OBJCOPY_BIN)
+    message(FATAL_ERROR "Unable to find ${TOOLCHAIN_TRIPLE}-objcopy")
+endif()
+
 set(CMAKE_C_ARCHIVE_CREATE
     "${AR_BIN} qc <TARGET> <OBJECTS>"
 )
@@ -48,11 +57,11 @@ set(CMAKE_CXX_ARCHIVE_CREATE
 )
 
 set(CMAKE_C_LINK_EXECUTABLE
-    "${LD_BIN} ${LD_FLAGS} -pie <OBJECTS> -o <TARGET> <LINK_LIBRARIES> "
+    "${LD_BIN} ${LD_FLAGS} <OBJECTS> -o <TARGET> <LINK_LIBRARIES> "
 )
 
 set(CMAKE_CXX_LINK_EXECUTABLE
-    "${LD_BIN} ${LD_FLAGS} -pie <OBJECTS> -o <TARGET> <LINK_LIBRARIES>"
+    "${LD_BIN} ${LD_FLAGS} <OBJECTS> -o <TARGET> <LINK_LIBRARIES>"
 )
 
 set(CMAKE_C_CREATE_SHARED_LIBRARY

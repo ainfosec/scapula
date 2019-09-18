@@ -9,11 +9,12 @@ ar = 'aarch64-linux-gnu-ar'
 strip = 'aarch64-linux-gnu-strip'
 ld = 'aarch64-linux-gnu-ld'
 
+
 [properties]
-c_args = ['-D__arm__=1']
-c_link_args = []
-cpp_args = ['-D__arm__=1']
-cpp_link_args = []
+c_args = ['-D__arm__=1', '-fpie', '-fno-stack-protector', '-fno-builtin', '-fno-common', '-ffreestanding', '-fno-omit-frame-pointer', '-mlittle-endian', '-mstrict-align', '-march=armv8-a']
+c_link_args = ['--no-dynamic-linker', '-nostdlib', '-pie', '-static']
+cpp_args = ['-D__arm__=1', '-fpie', '-fno-stack-protector', '-fno-builtin', '-fno-common', '-ffreestanding', '-fno-omit-frame-pointer', '-mlittle-endian', '-mstrict-align', '-march=armv8-a']
+cpp_link_args = ['--no-dynamic-linker', '-nostdlib', '-pie', '-static']
 
 # Keep this set, or the sanity check won't pass
 needs_exe_wrapper = true

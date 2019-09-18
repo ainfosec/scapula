@@ -3,7 +3,7 @@ message(STATUS "Including dependency: meson")
 set(MESON_URL "https://github.com/mesonbuild/meson/releases/download/0.51.1/meson-0.51.1.tar.gz")
 set(MESON_URL_MD5 "48787e391ec5c052799a3dd491f73909")
 set(MESON_SOURCE_DIR ${CACHE_DIR}/meson)
-set(MESON_INSTALL_DIR ${SCAPULA_AARCH64_INSTALL_PREFIX}/bin/meson)
+set(MESON_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/bin/meson)
 
 set(MESON_BIN ${MESON_INSTALL_DIR}/meson.py
     CACHE INTERNAL

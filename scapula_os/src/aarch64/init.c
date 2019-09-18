@@ -81,26 +81,12 @@ void init_el1(void)
 
 void init_scapula_os(void)
 {
-    print_banner();
-
-    // Clear BSS
-    uint64_t * buffer_start = (uint64_t *)&scapula_os_bss_start;
-    uint64_t * buffer_end = (uint64_t *)&scapula_os_bss_end;
-    SCAPULA_INFO("Clearing BSS: 0x%016x - 0x%016x", buffer_start, buffer_end);
-    while (buffer_start < buffer_end) {
-        *buffer_start = 0;
-        buffer_start++;
-    }
-
-    // Clear and initialize heap memory
-    buffer_start = (uint64_t *)&scapula_os_heap_start;
-    buffer_end = (uint64_t *)&scapula_os_heap_end;
+    // Initialize heap memory
+    uint64_t * buffer_start = (uint64_t *)&scapula_os_heap_start;
+    uint64_t * buffer_end = (uint64_t *)&scapula_os_heap_end;
+    size_t heap_size = (uintptr_t)&scapula_os_heap_end - (uintptr_t)&scapula_os_heap_start;
     SCAPULA_INFO("Initializing Heap: 0x%016x - 0x%016x", buffer_start, buffer_end);
-    while (buffer_start < buffer_end) {
-        *buffer_start = 0;
-        buffer_start++;
-    }
-    malloc_addblock(&scapula_os_heap_start, &scapula_os_heap_end - &scapula_os_heap_start);
+    malloc_addblock(&scapula_os_heap_start, heap_size);
     malloc_init();
 
     // Initialize g_current_el with whatever exception level Scapula OS
