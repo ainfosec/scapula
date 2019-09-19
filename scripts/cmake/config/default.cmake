@@ -205,3 +205,11 @@ add_config(
     DESCRIPTION "Path to A64 instruction XML spec directory (or NONE)"
     SKIP_VALIDATION
 )
+
+add_config(
+    CONFIG_NAME LOG_LEVEL
+    CONFIG_TYPE STRING
+    DEFAULT_VAL 3
+    DESCRIPTION "Log-level (0=none, 1=error, 2=warn, 3=info, 4=debug)"
+    OPTIONS 0 1 2 3 4
+)

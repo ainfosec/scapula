@@ -41,8 +41,15 @@ extern "C" {
 #else
 #include <stdio.h>
 #endif
-#define BFINFO(...) printf_("[ELF LOADER]: " __VA_ARGS__)
-#define BFALERT(...) printf_("[ELF LOADER ALERT]: " __VA_ARGS__)
+
+#if LOG_LEVEL>=3
+#define ELF_INFO(...) printf_("[ELF LOADER]: " __VA_ARGS__)
+#define ELF_ALERT(...) printf_("[ELF LOADER ALERT]: " __VA_ARGS__)
+#else
+#define ELF_INFO(...)
+#define ELF_ALERT(...)
+#endif
+
 #endif
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -52,8 +59,8 @@ extern "C" {
 #if defined(KERNEL) && !defined(EFI)
 #ifdef __linux__
 #include <linux/printk.h>
-#define BFINFO(...) printk(KERN_INFO "[ELF LOADER]: " __VA_ARGS__)
-#define BFALERT(...) printk(KERN_INFO "[ELF LOADER ALERT]: " __VA_ARGS__)
+#define ELF_INFO(...) printk(KERN_INFO "[ELF LOADER]: " __VA_ARGS__)
+#define ELF_ALERT(...) printk(KERN_INFO "[ELF LOADER ALERT]: " __VA_ARGS__)
 #endif
 #endif
 
@@ -64,8 +71,8 @@ extern "C" {
 #if defined(KERNEL) && !defined(EFI)
 #ifdef _WIN32
 #include <wdm.h>
-#define BFINFO(...) DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[ELF LOADER]: " __VA_ARGS__)
-#define BFALERT(...) DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[ELF LOADER ALERT]: " __VA_ARGS__)
+#define ELF_INFO(...) DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[ELF LOADER]: " __VA_ARGS__)
+#define ELF_ALERT(...) DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[ELF LOADER ALERT]: " __VA_ARGS__)
 #endif
 #endif
 
@@ -76,8 +83,8 @@ extern "C" {
 #if defined(KERNEL) && defined(EFI)
 #include "efi.h"
 #include "efilib.h"
-#define BFINFO(...) Print(L"[ELF LOADER]: " __VA_ARGS__)
-#define BFALERT(...) Print(L"[ELF LOADER ALERT]: " __VA_ARGS__)
+#define ELF_INFO(...) Print(L"[ELF LOADER]: " __VA_ARGS__)
+#define ELF_ALERT(...) Print(L"[ELF LOADER ALERT]: " __VA_ARGS__)
 #endif
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -177,32 +184,32 @@ struct bfelf_file_t {
 
 static inline void dump_bfelf_file_t(struct bfelf_file_t * ef)
 {
-    BFALERT("ELF Internal Data Structure Info:\n");
-    BFALERT("    entry: 0x%x\n", ef->entry);
-    BFALERT("    init_array_addr: 0x%x\n", ef->init_array_addr);
-    BFALERT("    init_array_size: 0x%x\n", ef->init_array_size);
-    BFALERT("    fini_array_addr: 0x%x\n", ef->fini_array_addr);
-    BFALERT("    fini_array_size: 0x%x\n", ef->fini_array_size);
-    BFALERT("    eh_frame_addr: 0x%x\n", ef->eh_frame_addr);
-    BFALERT("    eh_frame_size: 0x%x\n", ef->eh_frame_size);
-    BFALERT("    file: 0x%x\n", ef->file);
-    BFALERT("    size: 0x%x\n", ef->size);
-    BFALERT("    exec: 0x%x\n", ef->exec);
-    BFALERT("    virt: 0x%x\n", ef->virt);
-    BFALERT("    rx_addr: 0x%x\n", ef->rx_addr);
-    BFALERT("    rx_size: 0x%x\n", ef->rx_size);
-    BFALERT("    rw_addr: 0x%x\n", ef->rw_addr);
-    BFALERT("    rw_size: 0x%x\n", ef->rw_size);
-    BFALERT("    ehdr: 0x%x\n", ef->ehdr);
-    BFALERT("    phdrtab: 0x%x\n", ef->phdrtab);
-    BFALERT("    shdrtab: 0x%x\n", ef->shdrtab);
-    BFALERT("    shstrtab: 0x%x\n", ef->shstrtab);
-    BFALERT("    pt_load_rx: 0x%x\n", ef->pt_load_rx);
-    BFALERT("    pt_load_rw: 0x%x\n", ef->pt_load_rw);
-    BFALERT("    shdr_rela: 0x%x\n", ef->shdr_rela);
-    BFALERT("    shdr_init_array: 0x%x\n", ef->shdr_init_array);
-    BFALERT("    shdr_fini_array: 0x%x\n", ef->shdr_fini_array);
-    BFALERT("    shdr_eh_frame: 0x%x\n", ef->shdr_eh_frame);
+    ELF_ALERT("ELF Internal Data Structure Info:\n");
+    ELF_ALERT("    entry: 0x%x\n", ef->entry);
+    ELF_ALERT("    init_array_addr: 0x%x\n", ef->init_array_addr);
+    ELF_ALERT("    init_array_size: 0x%x\n", ef->init_array_size);
+    ELF_ALERT("    fini_array_addr: 0x%x\n", ef->fini_array_addr);
+    ELF_ALERT("    fini_array_size: 0x%x\n", ef->fini_array_size);
+    ELF_ALERT("    eh_frame_addr: 0x%x\n", ef->eh_frame_addr);
+    ELF_ALERT("    eh_frame_size: 0x%x\n", ef->eh_frame_size);
+    ELF_ALERT("    file: 0x%x\n", ef->file);
+    ELF_ALERT("    size: 0x%x\n", ef->size);
+    ELF_ALERT("    exec: 0x%x\n", ef->exec);
+    ELF_ALERT("    virt: 0x%x\n", ef->virt);
+    ELF_ALERT("    rx_addr: 0x%x\n", ef->rx_addr);
+    ELF_ALERT("    rx_size: 0x%x\n", ef->rx_size);
+    ELF_ALERT("    rw_addr: 0x%x\n", ef->rw_addr);
+    ELF_ALERT("    rw_size: 0x%x\n", ef->rw_size);
+    ELF_ALERT("    ehdr: 0x%x\n", ef->ehdr);
+    ELF_ALERT("    phdrtab: 0x%x\n", ef->phdrtab);
+    ELF_ALERT("    shdrtab: 0x%x\n", ef->shdrtab);
+    ELF_ALERT("    shstrtab: 0x%x\n", ef->shstrtab);
+    ELF_ALERT("    pt_load_rx: 0x%x\n", ef->pt_load_rx);
+    ELF_ALERT("    pt_load_rw: 0x%x\n", ef->pt_load_rw);
+    ELF_ALERT("    shdr_rela: 0x%x\n", ef->shdr_rela);
+    ELF_ALERT("    shdr_init_array: 0x%x\n", ef->shdr_init_array);
+    ELF_ALERT("    shdr_fini_array: 0x%x\n", ef->shdr_fini_array);
+    ELF_ALERT("    shdr_eh_frame: 0x%x\n", ef->shdr_eh_frame);
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -361,20 +368,20 @@ struct bfelf_ehdr {
 
 static inline void dump_bfelf_ehdr(struct bfelf_ehdr * ehdr)
 {
-    BFALERT("ELF Header:\n");
-    BFALERT("    e_type: 0x%x\n", ehdr->e_type);
-    BFALERT("    e_machine: 0x%x\n", ehdr->e_machine);
-    BFALERT("    e_version: 0x%x\n", ehdr->e_version);
-    BFALERT("    e_entry: 0x%x\n", ehdr->e_entry);
-    BFALERT("    e_phoff: 0x%x\n", ehdr->e_phoff);
-    BFALERT("    e_shoff: 0x%x\n", ehdr->e_shoff);
-    BFALERT("    e_flags: 0x%x\n", ehdr->e_flags);
-    BFALERT("    e_ehsize: 0x%x\n", ehdr->e_ehsize);
-    BFALERT("    e_phentsize: 0x%x\n", ehdr->e_phentsize);
-    BFALERT("    e_phnum: 0x%x\n", ehdr->e_phnum);
-    BFALERT("    e_shentsize: 0x%x\n", ehdr->e_shentsize);
-    BFALERT("    e_shnum: 0x%x\n", ehdr->e_shnum);
-    BFALERT("    e_shstrndx: 0x%x\n", ehdr->e_shstrndx);
+    ELF_ALERT("ELF Header:\n");
+    ELF_ALERT("    e_type: 0x%x\n", ehdr->e_type);
+    ELF_ALERT("    e_machine: 0x%x\n", ehdr->e_machine);
+    ELF_ALERT("    e_version: 0x%x\n", ehdr->e_version);
+    ELF_ALERT("    e_entry: 0x%x\n", ehdr->e_entry);
+    ELF_ALERT("    e_phoff: 0x%x\n", ehdr->e_phoff);
+    ELF_ALERT("    e_shoff: 0x%x\n", ehdr->e_shoff);
+    ELF_ALERT("    e_flags: 0x%x\n", ehdr->e_flags);
+    ELF_ALERT("    e_ehsize: 0x%x\n", ehdr->e_ehsize);
+    ELF_ALERT("    e_phentsize: 0x%x\n", ehdr->e_phentsize);
+    ELF_ALERT("    e_phnum: 0x%x\n", ehdr->e_phnum);
+    ELF_ALERT("    e_shentsize: 0x%x\n", ehdr->e_shentsize);
+    ELF_ALERT("    e_shnum: 0x%x\n", ehdr->e_shnum);
+    ELF_ALERT("    e_shstrndx: 0x%x\n", ehdr->e_shstrndx);
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -453,17 +460,17 @@ struct bfelf_shdr {
 
 static inline void dump_bfelf_shdr(struct bfelf_shdr * shdr)
 {
-    BFALERT("ELF Section Header:\n");
-    BFALERT("    sh_name: 0x%x\n", shdr->sh_name);
-    BFALERT("    sh_type: 0x%x\n", shdr->sh_type);
-    BFALERT("    sh_flags: 0x%x\n", shdr->sh_flags);
-    BFALERT("    sh_addr: 0x%x\n", shdr->sh_addr);
-    BFALERT("    sh_offset: 0x%x\n", shdr->sh_offset);
-    BFALERT("    sh_size: 0x%x\n", shdr->sh_size);
-    BFALERT("    sh_link: 0x%x\n", shdr->sh_link);
-    BFALERT("    sh_info: 0x%x\n", shdr->sh_info);
-    BFALERT("    sh_addralign: 0x%x\n", shdr->sh_addralign);
-    BFALERT("    sh_entsize: 0x%x\n", shdr->sh_entsize);
+    ELF_ALERT("ELF Section Header:\n");
+    ELF_ALERT("    sh_name: 0x%x\n", shdr->sh_name);
+    ELF_ALERT("    sh_type: 0x%x\n", shdr->sh_type);
+    ELF_ALERT("    sh_flags: 0x%x\n", shdr->sh_flags);
+    ELF_ALERT("    sh_addr: 0x%x\n", shdr->sh_addr);
+    ELF_ALERT("    sh_offset: 0x%x\n", shdr->sh_offset);
+    ELF_ALERT("    sh_size: 0x%x\n", shdr->sh_size);
+    ELF_ALERT("    sh_link: 0x%x\n", shdr->sh_link);
+    ELF_ALERT("    sh_info: 0x%x\n", shdr->sh_info);
+    ELF_ALERT("    sh_addralign: 0x%x\n", shdr->sh_addralign);
+    ELF_ALERT("    sh_entsize: 0x%x\n", shdr->sh_entsize);
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -533,15 +540,15 @@ struct bfelf_phdr {
 
 static inline void dump_bfelf_phdr(struct bfelf_phdr * phdr)
 {
-    BFALERT("ELF Program Header @ 0x%x:\n", phdr);
-    BFALERT("    p_type: 0x%x\n", phdr->p_type);
-    BFALERT("    p_flags: 0x%x\n", phdr->p_flags);
-    BFALERT("    p_offset: 0x%x\n", phdr->p_offset);
-    BFALERT("    p_vaddr: 0x%x\n", phdr->p_vaddr);
-    BFALERT("    p_paddr: 0x%x\n", phdr->p_paddr);
-    BFALERT("    p_filesz: 0x%x\n", phdr->p_filesz);
-    BFALERT("    p_memsz: 0x%x\n", phdr->p_memsz);
-    BFALERT("    p_align: 0x%x\n", phdr->p_align);
+    ELF_ALERT("ELF Program Header @ 0x%x:\n", phdr);
+    ELF_ALERT("    p_type: 0x%x\n", phdr->p_type);
+    ELF_ALERT("    p_flags: 0x%x\n", phdr->p_flags);
+    ELF_ALERT("    p_offset: 0x%x\n", phdr->p_offset);
+    ELF_ALERT("    p_vaddr: 0x%x\n", phdr->p_vaddr);
+    ELF_ALERT("    p_paddr: 0x%x\n", phdr->p_paddr);
+    ELF_ALERT("    p_filesz: 0x%x\n", phdr->p_filesz);
+    ELF_ALERT("    p_memsz: 0x%x\n", phdr->p_memsz);
+    ELF_ALERT("    p_align: 0x%x\n", phdr->p_align);
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -598,24 +605,24 @@ struct bfelf_rela {
 
 static inline void dump_bfelf_rela(struct bfelf_rela * rela)
 {
-    BFALERT("ELF RELA Relocation:\n");
+    ELF_ALERT("ELF RELA Relocation:\n");
     switch (BFELF_REL_TYPE(rela->r_info)) {
         case BFR_X86_64_RELATIVE: {
-            BFALERT("    r_info: R_X86_64_RELATIVE\n");
+            ELF_ALERT("    r_info: R_X86_64_RELATIVE\n");
             break;
         }
 
         case BFR_AARCH64_RELATIVE: {
-            BFALERT("    r_info: R_AARCH64_RELATIVE\n");
+            ELF_ALERT("    r_info: R_AARCH64_RELATIVE\n");
             break;
         }
 
         default:
-            BFALERT("    r_info: unknown type (0x%x)\n", rela->r_info);
+            ELF_ALERT("    r_info: unknown type (0x%x)\n", rela->r_info);
     }
 
-    BFALERT("    r_offset: 0x%x\n", rela->r_offset);
-    BFALERT("    r_addend: 0x%x\n", rela->r_addend);
+    ELF_ALERT("    r_offset: 0x%x\n", rela->r_offset);
+    ELF_ALERT("    r_addend: 0x%x\n", rela->r_addend);
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -672,67 +679,67 @@ static inline status_t
 private_check_support(struct bfelf_file_t *ef)
 {
     if (ef->ehdr->e_ident[bfei_mag0] != 0x7F) {
-        BFALERT("magic #0 has unexpected value\n");
+        ELF_ALERT("magic #0 has unexpected value\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_mag1] != 'E') {
-        BFALERT("magic #1 has unexpected value\n");
+        ELF_ALERT("magic #1 has unexpected value\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_mag2] != 'L') {
-        BFALERT("magic #2 has unexpected value\n");
+        ELF_ALERT("magic #2 has unexpected value\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_mag3] != 'F') {
-        BFALERT("magic #3 has unexpected value\n");
+        ELF_ALERT("magic #3 has unexpected value\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_class] != bfelfclass64) {
-        BFALERT("file is not 64bit\n");
+        ELF_ALERT("file is not 64bit\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_data] != bfelfdata2lsb) {
-        BFALERT("file is not little endian\n");
+        ELF_ALERT("file is not little endian\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_version] != bfev_current) {
-        BFALERT("unsupported version\n");
+        ELF_ALERT("unsupported version\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_osabi] != bfelfosabi_sysv) {
-        BFALERT("file does not use the system v abi\n");
+        ELF_ALERT("file does not use the system v abi\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_ident[bfei_abiversion] != 0) {
-        BFALERT("unsupported abi version\n");
+        ELF_ALERT("unsupported abi version\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_type != bfet_dyn) {
-        BFALERT("file must be marked as ET_DYN\n");
+        ELF_ALERT("file must be marked as ET_DYN\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_machine != bfem_x86_64 && ef->ehdr->e_machine != bfem_aarch64) {
-        BFALERT("file must be compiled for x86_64 or aarch64\n");
+        ELF_ALERT("file must be compiled for x86_64 or aarch64\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_version != bfev_current) {
-        BFALERT("unsupported version\n");
+        ELF_ALERT("unsupported version\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_flags != 0) {
-        BFALERT("unsupported flags\n");
+        ELF_ALERT("unsupported flags\n");
         return BFFAILURE;
     }
 
@@ -751,7 +758,7 @@ private_process_segments(struct bfelf_file_t *ef)
         const struct bfelf_phdr *phdr = &(ef->phdrtab[i]);
 
         if (phdr->p_type == bfpt_gnu_stack && phdr->p_flags != bfpf_rw) {
-            BFALERT("executable stacks are not supported\n");
+            ELF_ALERT("executable stacks are not supported\n");
             return BFFAILURE;
         }
 
@@ -762,7 +769,7 @@ private_process_segments(struct bfelf_file_t *ef)
         switch(phdr->p_flags) {
             case bfpf_rx:
                 if (ef->pt_load_rx != nullptr) {
-                    BFALERT("ELF file has too many bfpf_rx segments\n");
+                    ELF_ALERT("ELF file has too many bfpf_rx segments\n");
                     return BFFAILURE;
                 }
 
@@ -771,7 +778,7 @@ private_process_segments(struct bfelf_file_t *ef)
 
             case bfpf_rw:
                 if (ef->pt_load_rw != nullptr) {
-                    BFALERT("ELF file has too many bfpf_rw segments\n");
+                    ELF_ALERT("ELF file has too many bfpf_rw segments\n");
                     return BFFAILURE;
                 }
 
@@ -779,18 +786,18 @@ private_process_segments(struct bfelf_file_t *ef)
                 break;
 
             default:
-                BFALERT("ELF segments other than RW or RE are not supported\n");
+                ELF_ALERT("ELF segments other than RW or RE are not supported\n");
                 return BFFAILURE;
         };
     }
 
     if (ef->pt_load_rx == nullptr) {
-        BFALERT("ELF file is missing an RE segment\n");
+        ELF_ALERT("ELF file is missing an RE segment\n");
         return BFFAILURE;
     }
 
     if (ef->pt_load_rw == nullptr) {
-        BFALERT("ELF file is missing an RW segment\n");
+        ELF_ALERT("ELF file is missing an RW segment\n");
         return BFFAILURE;
     }
 
@@ -826,7 +833,7 @@ private_process_sections(struct bfelf_file_t *ef)
 
             case bfsht_rela:
                 if (ef->shdr_rela != nullptr) {
-                    BFALERT("ELF file has too many bfsht_rela sections\n");
+                    ELF_ALERT("ELF file has too many bfsht_rela sections\n");
                     return BFFAILURE;
                 }
 
@@ -835,7 +842,7 @@ private_process_sections(struct bfelf_file_t *ef)
 
             case bfsht_init_array:
                 if (ef->shdr_init_array != nullptr) {
-                    BFALERT("ELF file has too many bfsht_init_array sections\n");
+                    ELF_ALERT("ELF file has too many bfsht_init_array sections\n");
                     return BFFAILURE;
                 }
 
@@ -844,7 +851,7 @@ private_process_sections(struct bfelf_file_t *ef)
 
             case bfsht_fini_array:
                 if (ef->shdr_fini_array != nullptr) {
-                    BFALERT("ELF file has too many bfsht_fini_array sections\n");
+                    ELF_ALERT("ELF file has too many bfsht_fini_array sections\n");
                     return BFFAILURE;
                 }
 
@@ -852,7 +859,7 @@ private_process_sections(struct bfelf_file_t *ef)
                 break;
 
             default:
-                BFALERT("Section %d in ELF file has unknown type: 0x%x\n", i, shdr->sh_type);
+                ELF_ALERT("Section %d in ELF file has unknown type: 0x%x\n", i, shdr->sh_type);
                 return BFFAILURE;
         };
     }
@@ -863,7 +870,7 @@ private_process_sections(struct bfelf_file_t *ef)
 
         if (private_strcmp(name, ".eh_frame") == BFSUCCESS) {
             if (ef->shdr_eh_frame != nullptr) {
-                BFALERT("ELF file has too many eh_frame sections\n");
+                ELF_ALERT("ELF file has too many eh_frame sections\n");
                 return BFFAILURE;
             }
 
@@ -872,22 +879,22 @@ private_process_sections(struct bfelf_file_t *ef)
         }
 
         if (private_strcmp(name, ".init") == BFSUCCESS) {
-            BFALERT("ELF file has unsupported section: init\n");
+            ELF_ALERT("ELF file has unsupported section: init\n");
             return BFFAILURE;
         }
 
         if (private_strcmp(name, ".fini") == BFSUCCESS) {
-            BFALERT("ELF file has unsupported section: fini\n");
+            ELF_ALERT("ELF file has unsupported section: fini\n");
             return BFFAILURE;
         }
 
         if (private_strcmp(name, ".ctors") == BFSUCCESS) {
-            BFALERT("ELF file has unsupported section: ctors\n");
+            ELF_ALERT("ELF file has unsupported section: ctors\n");
             return BFFAILURE;
         }
 
         if (private_strcmp(name, ".dtors") == BFSUCCESS) {
-            BFALERT("ELF file has unsupported section: dtors\n");
+            ELF_ALERT("ELF file has unsupported section: dtors\n");
             return BFFAILURE;
         }
     }
@@ -955,7 +962,7 @@ private_relocate(struct bfelf_file_t *ef)
             }
 
             default:
-                BFALERT("unsupported relocation type: %u\n", BFELF_REL_TYPE(rela->r_info));
+                ELF_ALERT("unsupported relocation type: %u\n", BFELF_REL_TYPE(rela->r_info));
                 return BFFAILURE;
         }
     }
@@ -969,17 +976,17 @@ bfelf_file_init(const void *file, uint64_t filesz, struct bfelf_file_t *ef)
     status_t ret = 0;
 
     if (file == nullptr) {
-        BFALERT("file == nullptr\n");
+        ELF_ALERT("file == nullptr\n");
         return BFFAILURE;
     }
 
     if (filesz < sizeof(struct bfelf_ehdr)) {
-        BFALERT("filesz invalid\n");
+        ELF_ALERT("filesz invalid\n");
         return BFFAILURE;
     }
 
     if (ef == nullptr) {
-        BFALERT("ef == nullptr\n");
+        ELF_ALERT("ef == nullptr\n");
         return BFFAILURE;
     }
 
@@ -992,12 +999,12 @@ bfelf_file_init(const void *file, uint64_t filesz, struct bfelf_file_t *ef)
     }
 
     if (ef->ehdr->e_phoff + (ef->ehdr->e_phnum * sizeof(struct bfelf_phdr)) > filesz) {
-        BFALERT("filesz invalid\n");
+        ELF_ALERT("filesz invalid\n");
         return BFFAILURE;
     }
 
     if (ef->ehdr->e_shoff + (ef->ehdr->e_shnum * sizeof(struct bfelf_shdr)) > filesz) {
-        BFALERT("filesz invalid\n");
+        ELF_ALERT("filesz invalid\n");
         return BFFAILURE;
     }
 
@@ -1031,12 +1038,12 @@ bfelf_file_alloc(
     struct bfelf_file_t *ef, void *(*alloc_func)(size_t))
 {
     if (ef == nullptr) {
-        BFALERT("ef == nullptr\n");
+        ELF_ALERT("ef == nullptr\n");
         return nullptr;
     }
 
     if (alloc_func == nullptr) {
-        BFALERT("alloc_func == nullptr\n");
+        ELF_ALERT("alloc_func == nullptr\n");
         return nullptr;
     }
 
@@ -1051,7 +1058,7 @@ bfelf_file_load(
     status_t ret = 0;
 
     if (exec == nullptr) {
-        BFALERT("exec == nullptr\n");
+        ELF_ALERT("exec == nullptr\n");
         return BFFAILURE;
     }
 
@@ -1060,11 +1067,11 @@ bfelf_file_load(
     }
 
     if (ef == nullptr) {
-        BFALERT("ef == nullptr\n");
+        ELF_ALERT("ef == nullptr\n");
         return BFFAILURE;
     }
 
-    BFINFO("Loading ELF file\n");
+    ELF_INFO("Loading ELF file\n");
 
     ef->exec = BFSCAST(uint8_t *, exec);
     ef->virt = virt;
@@ -1072,25 +1079,25 @@ bfelf_file_load(
     uintptr_t entry_addr = ef->virt + ef->ehdr->e_entry;
     ef->entry = entry_addr;
 
-    BFINFO("    zeroing execution buffer...");
+    ELF_INFO("    zeroing execution buffer...");
     private_memset(exec, 0, ef->size);
-    printf_("done\n");
+    ELF_INFO("done\n");
 
     phdr = ef->pt_load_rx;
     ef->rx_size = BFALIGN(phdr->p_memsz, phdr->p_align);
     ef->rx_addr = ef->exec + phdr->p_paddr;
     const void * rx_segment_file_addr = ef->file + phdr->p_offset;
-    BFINFO("    loading read/execute segment: 0x%x -> 0x%x...", rx_segment_file_addr, ef->rx_addr);
+    ELF_INFO("    loading read/execute segment: 0x%x -> 0x%x...", rx_segment_file_addr, ef->rx_addr);
     private_memcpy(ef->rx_addr, rx_segment_file_addr, phdr->p_filesz);
-    printf_("done\n");
+    ELF_INFO("done\n");
 
     phdr = ef->pt_load_rw;
     ef->rw_size = BFALIGN(phdr->p_memsz, phdr->p_align);
     ef->rw_addr = ef->exec + phdr->p_paddr;
     const void * rw_segment_file_addr = ef->file + phdr->p_offset;
-    BFINFO("    loading read/write segment: 0x%x -> 0x%x...", rw_segment_file_addr, ef->rw_addr);
+    ELF_INFO("    loading read/write segment: 0x%x -> 0x%x...", rw_segment_file_addr, ef->rw_addr);
     private_memcpy(ef->rw_addr, rw_segment_file_addr, phdr->p_filesz);
-    printf_("done\n");
+    ELF_INFO("done\n");
 
     if (mark_rx_func != nullptr) {
         ret = mark_rx_func((void *)ef->rx_addr, ef->rx_size);
@@ -1104,14 +1111,14 @@ bfelf_file_load(
         return ret;
     }
 
-    BFINFO("    performing symbol relocations...");
+    ELF_INFO("    performing symbol relocations...");
     ret = private_relocate(ef);
     if (ret != BFSUCCESS) {
         return ret;
     }
-    printf_("done\n");
+    ELF_INFO("done\n");
 
-    BFINFO("    ELF file loaded, entry point: 0x%x\n", ef->entry);
+    ELF_INFO("    ELF file loaded, entry point: 0x%x\n", ef->entry);
     return BFSUCCESS;
 }
 

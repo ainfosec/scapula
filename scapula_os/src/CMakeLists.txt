@@ -24,6 +24,7 @@ target_include_directories(scapula_os
 
 target_compile_definitions(scapula_os
     PRIVATE CMAKE_CONFIG_SERIAL_BASE=${SERIAL_BASE}
+    PRIVATE LOG_LEVEL=${LOG_LEVEL}
 )
 
 install(TARGETS scapula_os DESTINATION lib)
