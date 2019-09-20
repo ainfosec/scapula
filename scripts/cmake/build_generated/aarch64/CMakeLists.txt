@@ -14,10 +14,14 @@ target_include_directories(aarch64_testcases
     PRIVATE ${CMAKE_INSTALL_PREFIX}/include
 )
 
+target_compile_definitions(aarch64_testcases
+    PRIVATE LOG_LEVEL=${LOG_LEVEL}
+)
+
 target_link_libraries(aarch64_testcases
     ${CMAKE_INSTALL_PREFIX}/lib/libc.a
     ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a
-    ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a
+    --whole-archive ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a --no-whole-archive
     ${CMAKE_INSTALL_PREFIX}/lib/libscapula_os.a
 )
 install(TARGETS aarch64_testcases DESTINATION bin)

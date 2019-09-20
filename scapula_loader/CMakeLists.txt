@@ -21,6 +21,10 @@ target_include_directories(scapula_loader
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../scapula_os/include
 )
 
+target_compile_definitions(scapula_loader
+    PRIVATE LOG_LEVEL=${LOG_LEVEL}
+)
+
 set(CONFIGURED_LINKER_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/loader.lds")
 configure_file(src/loader.lds ${CONFIGURED_LINKER_SCRIPT})
 
@@ -31,7 +35,7 @@ set_target_properties(scapula_loader
 target_link_libraries(scapula_loader
     ${CMAKE_INSTALL_PREFIX}/lib/libfdt.a
     ${CMAKE_INSTALL_PREFIX}/lib/libc.a
-    ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a
+    --whole-archive ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a --no-whole-archive
     ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a
     ${CMAKE_INSTALL_PREFIX}/lib/libscapula_os.a
     ${CMAKE_INSTALL_PREFIX}/lib/test_case_image.a

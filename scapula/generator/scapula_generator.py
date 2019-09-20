@@ -28,8 +28,7 @@ class ScapulaGenerator(shoulder.generator.abstract_generator.AbstractGenerator):
 
         opath = os.path.abspath(outpath)
 
-        if self.verbose:
-            self.gadgets["scapula.gadget.testcase"].verbose = True
+        self.gadgets["scapula.gadget.testcase"].verbose = self.verbose
 
         registers = self.setup(registers)
 

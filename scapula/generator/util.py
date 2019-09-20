@@ -45,7 +45,7 @@ def read_all_fields(outfile, reg, el=None):
                 outfile.write("switch_to_el({el});\n".format(el=int(el)))
 
             outfile.write("val = " + f_getter_name + "();\n")
-            outfile.write("SCAPULA_PRINT(\"{r}.{f}: %x\", val);\n".format(
+            outfile.write("SCAPULA_DEBUG(\"{r}.{f}: %x\", val);\n".format(
                 r=rname,
                 f=fname
             ))
