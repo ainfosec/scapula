@@ -8,6 +8,16 @@ def get_register_func(reg):
         rname=reg.name.lower()
     )
 
+def set_register_func(reg):
+    es = reg.execution_state
+    if es is None:
+        es = "external"
+
+    return "{es}_{rname}_set".format(
+        es=es,
+        rname=reg.name.lower()
+    )
+
 
 def get_register_field_func(reg, field):
     es = reg.execution_state
