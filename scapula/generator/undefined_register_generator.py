@@ -1,14 +1,9 @@
 import shoulder
-from dataclasses import dataclass
-
 from scapula.generator.scapula_generator import ScapulaGenerator
-from scapula.generator.util import *
+import scapula.writer as writer
 
-@dataclass
+
 class UndefinedRegisterGenerator(ScapulaGenerator):
-
-    verbose: bool = True
-    """ Set True to generate more verbose test case messages """
 
     def create_undefined_reg(self, op1, op2, crn, crm):
         reg = shoulder.model.armv8a.ARMv8ARegister()
@@ -62,25 +57,41 @@ class UndefinedRegisterGenerator(ScapulaGenerator):
         return undefined_regs
 
     def generate_testcase(self, outfile, reg):
-        outfile.write("uint64_t test1 = 0;\n\n")
-        outfile.write("uint64_t test2 = 0;\n\n")
+        var1 = writer.declare_variable(outfile, "test1", reg.size)
+        var2 = writer.declare_variable(outfile, "test2", reg.size)
+        test_value = writer.declare_variable(outfile, "test_value", reg.size,
+                                      value=0XDEADBEEFDEADBEEF, const=True)
+        writer.write_newline(outfile)
 
-        f_getter_name = get_register_func(reg)
-        f_setter_name = set_register_func(reg)
+        msg = "Reading {r}...".format(r=reg.name)
+        writer.print_debug(outfile, msg)
+        writer.get_register(outfile, reg, var1)
 
-        outfile.write("SCAPULA_DEBUG(\"Reading {r}...\");\n".format(r=reg.name))
-        outfile.write("test1 = " + f_getter_name + "();\n")
-        outfile.write("SCAPULA_DEBUG(\"Writing {r}...\");\n".format(r=reg.name))
-        outfile.write(f_setter_name + "(0XDEADBEEFDEADBEEF);\n")
-        outfile.write("SCAPULA_DEBUG(\"Reading {r}...\");\n".format(r=reg.name))
-        outfile.write("test2 = " + f_getter_name + "();\n")
+        msg = "Writing {r}...".format(r=reg.name)
+        writer.print_debug(outfile, msg)
+        writer.set_register(outfile, reg, test_value)
 
-        outfile.write("if (test1 == test2) SCAPULA_DEBUG(\"NO CHANGE\");\n")
-        outfile.write("else if (test2 == 0XDEADBEEF) SCAPULA_ALERT(\"WRITABLE\");\n")
-        outfile.write("else SCAPULA_ALERT(\"UNKNOWN BEHAVIOR\");\n")
+        msg = "Reading {r}...".format(r=reg.name)
+        writer.print_debug(outfile, msg)
+        writer.get_register(outfile, reg, var2)
+        writer.write_newline(outfile)
 
-        outfile.write("SCAPULA_DEBUG(\"    {r}: %x -> %x\", test1, test2);\n".format(
-            r = reg.name
-        ))
+        writer.if_statement(outfile, var1 + " == " + var2)
+        msg = "System register {r} is not writable".format(r=reg.name)
+        writer.print_debug(outfile, msg, indent=1)
+
+        writer.else_if_statement(outfile, var2 + " == " + test_value)
+        msg = "System register {r} is fully writable".format(r=reg.name)
+        writer.print_warning(outfile, msg, indent=1)
+
+        writer.else_statement(outfile)
+        msg = "System register {r} is partially writable".format(r=reg.name)
+        writer.print_warning(outfile, msg, indent=1)
+        writer.endif(outfile)
+        writer.write_newline(outfile)
+
+        msg = "    {r}: %x -> %x".format(r=reg.name)
+        fmt = var1 + ", " + var2
+        writer.print_debug(outfile, msg, format_str=fmt)
 
         return

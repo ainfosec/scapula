@@ -1,17 +1,12 @@
 import shoulder
-from dataclasses import dataclass
 
 from scapula.filter import filters
 from scapula.transform import transforms
 from scapula.generator.scapula_generator import ScapulaGenerator
-from scapula.generator.util import *
+import scapula.writer as writer
 
 
-@dataclass
 class ReadImpDefGenerator(ScapulaGenerator):
-
-    verbose: bool = True
-    """ Set True to generate more verbose test cases messages """
 
     def setup(self, regs):
         regs = shoulder.filter.filters["aarch64"].filter_inclusive(regs)
@@ -27,4 +22,14 @@ class ReadImpDefGenerator(ScapulaGenerator):
 
     def generate_testcase(self, outfile, reg):
         if reg.is_readable():
-            read_all_fields(outfile, reg, el=2)
+            var1 = writer.declare_variable(outfile, "val", reg.size)
+
+            for fs_idx, fs in enumerate(reg.fieldsets):
+                for f_idx, f in enumerate(fs.fields):
+                    writer.get_field(outfile, reg, f, var1)
+
+                    msg = "IMPLEMENTATION_DEFINED {r}.{f} = 0x%016x".format(
+                        r=reg.name,
+                        f=f.name
+                    )
+                    writer.print_debug(outfile, msg, format_str=var1)
