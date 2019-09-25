@@ -1,17 +1,12 @@
 import shoulder
-from dataclasses import dataclass
 
 from scapula.filter import filters
 from scapula.transform import transforms
 from scapula.generator.scapula_generator import ScapulaGenerator
-from scapula.generator.util import *
+import scapula.writer as writer
 
 
-@dataclass
 class ReadRes1Generator(ScapulaGenerator):
-
-    verbose: bool = True
-    """ Set True to generate more verbose test cases messages """
 
     def setup(self, regs):
         regs = shoulder.filter.filters["aarch64"].filter_inclusive(regs)
@@ -27,4 +22,15 @@ class ReadRes1Generator(ScapulaGenerator):
 
     def generate_testcase(self, outfile, reg):
         if reg.is_readable():
-            read_all_fields(outfile, reg, el=2)
+            var1 = writer.declare_variable(outfile, "val", reg.size)
+
+            for fs_idx, fs in enumerate(reg.fieldsets):
+                for f_idx, f in enumerate(fs.fields):
+                    writer.get_field(outfile, reg, f, var1)
+                    writer.if_statement(outfile, var1 + " != 1")
+
+                    msg = "RES1 field " + reg.name + "." + f.name + " != 1"
+                    writer.print_warning(outfile, msg, indent=1)
+
+                    writer.endif(outfile)
+                    writer.write_newline(outfile)

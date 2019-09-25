@@ -1,13 +1,9 @@
 import shoulder
-from dataclasses import dataclass
 
-from scapula.filter import filters
-from scapula.transform import transforms
 from scapula.generator.scapula_generator import ScapulaGenerator
-from scapula.generator.util import *
+import scapula.writer as writer
 
 
-@dataclass
 class ReadAarch32Generator(ScapulaGenerator):
 
     def setup(self, regs):
@@ -22,4 +18,6 @@ class ReadAarch32Generator(ScapulaGenerator):
         return regs
 
     def generate_testcase(self, outfile, reg):
-        read_all_fields(outfile, reg)
+        if reg.is_readable():
+            var1 = writer.declare_variable(outfile, "val", reg.size)
+            writer.get_register(outfile, reg, var1)
