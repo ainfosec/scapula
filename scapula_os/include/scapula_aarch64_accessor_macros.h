@@ -92,6 +92,43 @@
         : "x0", "x1", "x2"                                                     \
     );
 
+#define SHOULDER_AARCH64_SYSL_IMPL(o1, cn, cm, o2)                             \
+    uint64_t val;                                                              \
+    __asm__ __volatile__(                                                      \
+        "stp x0, x1, [sp, #-16]!\n"                                            \
+        "stp x2, xzr, [sp, #-16]!\n"                                           \
+        "mov x0, sp\n"                                                         \
+        "mov x1, lr\n"                                                         \
+        "mov %[v], xzr\n"                                                      \
+        "adr x2, .+8\n"                                                        \
+        "sysl x9, #"#o1", C"#cn", C"#cm", #"#o2"\n"                            \
+        "mov %[v], x9\n"                                                       \
+        "mov sp, x0\n"                                                         \
+        "mov lr, x1\n"                                                         \
+        "ldp x2, xzr, [sp], #16\n"                                             \
+        "ldp x0, x1, [sp], #16\n"                                              \
+        : [v] "=r"(val)                                                        \
+        :                                                                      \
+        : "x0", "x1", "x2", "x9"                                               \
+    );                                                                         \
+
+#define SHOULDER_AARCH64_SYS_IMPL(o1, cn, cm, o2, val)                         \
+    __asm__ __volatile__(                                                      \
+        "stp x0, x1, [sp, #-16]!\n"                                            \
+        "stp x2, xzr, [sp, #-16]!\n"                                           \
+        "mov x0, sp\n"                                                         \
+        "mov x1, lr\n"                                                         \
+        "adr x2, .+8\n"                                                        \
+        "sys #"#o1", C"#cn", C"#cm", #"#o2", %[v]\n"                           \
+        "mov sp, x0\n"                                                         \
+        "mov lr, x1\n"                                                         \
+        "ldp x2, xzr, [sp], #16\n"                                             \
+        "ldp x0, x1, [sp], #16\n"                                              \
+        :                                                                      \
+        : [v] "r"(val)                                                         \
+        : "x0", "x1", "x2"                                                     \
+    );
+
 #define SHOULDER_AARCH64_STR_IMPL(addr, val)                                   \
     SCAPULA_ERROR("SHOULDER_AARCH64_STR_IMPL not implemented"); \
     panic();

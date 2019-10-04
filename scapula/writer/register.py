@@ -134,3 +134,60 @@ def set_field(outfile: TextIO, reg: Register, field: Field, val: int, indent: in
     )
 
     outfile.write(output)
+
+def execute_sysl_instruction(outfile: TextIO, instr: Register, indent: int=0):
+    """Writes a function to the given output file that performs the given SYSL operation.
+
+    The generated function performs a SYSL operation on the given undefined instruction.
+
+    Args:
+        outfile: The output file to be written
+        instr: The instruction to be written
+        indent (optional): The number of leading tab characters to be written
+
+    Examples:
+        >>> instr = shoulder.model.register.Register(name="example", size=64, arch="aarch64")
+        >>> sysl_instruction(sys.stdout, instr)
+        x = SHOULDER_AARCH64_SYSL_IMPL(instr.op1, instr.crn, instr.crm, instr.op2);
+    """
+
+    write_indent(outfile, indent)
+
+    output = "SHOULDER_AARCH64_SYSL_IMPL({o1}, {cn}, {cm}, {o2});\n".format(
+            o1 = instr.access_mechanisms["mrs_register"][0].op1,
+            cn = instr.access_mechanisms["mrs_register"][0].crn,
+            cm = instr.access_mechanisms["mrs_register"][0].crm,
+            o2 = instr.access_mechanisms["mrs_register"][0].op2
+    )
+
+    outfile.write(output)
+
+
+def execute_sys_instruction(outfile: TextIO, instr: Register, val: int, indent: int=0):
+    """Writes a function to the given output file that performs the given SYS operation.
+
+    The generated function performs a SYS operation on the given undefined instruction
+    with the given value val.
+
+    Args:
+        outfile: The output file to be written
+        instr: The instruction to be written
+        val: The value to be written to the instruction
+        indent (optional): The number of leading tab characters to be written
+
+    Examples:
+        >>> instr = shoulder.model.register.Register(name="example", size=64, arch="aarch64")
+        >>> sys_instruction(sys.stdout, instr, 0xcafe)
+        SHOULDER_AARCH64_SYS_IMPL(instr.op1, instr.crn, instr.crm, instr.op2, 0xcafe)
+    """
+    write_indent(outfile, indent)
+
+    output = "SHOULDER_AARCH64_SYS_IMPL({o1}, {cn}, {cm}, {o2}, {val});\n".format(
+            o1 = instr.access_mechanisms["msr_register"][0].op1,
+            cn = instr.access_mechanisms["msr_register"][0].crn,
+            cm = instr.access_mechanisms["msr_register"][0].crm,
+            o2 = instr.access_mechanisms["msr_register"][0].op2,
+            val=str(val) if type(val) == str else hex(val)
+    )
+
+    outfile.write(output)

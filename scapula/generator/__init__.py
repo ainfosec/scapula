@@ -16,3 +16,4 @@ generators["settable_res0_generator"] = settable_res0_generator.SettableRes0Gene
 generators["settable_res1_generator"] = settable_res1_generator.SettableRes1Generator()
 generators["settable_imp_def_generator"] = settable_imp_def_generator.SettableImpDefGenerator()
 generators["undefined_register_generator"] = undefined_register_generator.UndefinedRegisterGenerator()
+generators["undefined_instruction_generator"] = undefined_instruction_generator.UndefinedInstructionGenerator()
