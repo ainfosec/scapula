@@ -16,11 +16,17 @@ target_include_directories(aarch32_testcases
     PRIVATE ${CMAKE_INSTALL_PREFIX}/include
 )
 
+target_compile_definitions(aarch32_testcases
+    PUBLIC
+        CMAKE_CONFIG_SERIAL_BASE=${SERIAL_BASE}
+        LOG_LEVEL=${LOG_LEVEL}
+)
+
 target_link_libraries(aarch32_testcases
     # ${CMAKE_INSTALL_PREFIX}/lib/libc.a
-    # ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a
-    # ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a
-    ${CMAKE_INSTALL_PREFIX}/lib/libscapula_os.a
+    # --whole-archive ${CMAKE_INSTALL_PREFIX}/lib/libmemory_freelist.a --no-whole-archive
+    # --whole-archive ${CMAKE_INSTALL_PREFIX}/lib/libprintf.a --no-whole-archive
+    # --whole-archive ${CMAKE_INSTALL_PREFIX}/lib/libscapula_os.a --no-whole-archive
 )
 
 install(TARGETS aarch32_testcases DESTINATION bin)

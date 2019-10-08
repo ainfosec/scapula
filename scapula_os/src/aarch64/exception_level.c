@@ -35,6 +35,17 @@ void set_current_el(uint32_t new_el)
     g_current_el = new_el;
 }
 
+static volatile uint32_t synchronous_interrupt_counter = 0;
+
+uint64_t get_exception_counter(void)
+{ return synchronous_interrupt_counter; }
+
+void increment_exception_counter(void)
+{ synchronous_interrupt_counter++; }
+
+void reset_exception_counter(void)
+{ synchronous_interrupt_counter = 0; }
+
 void switch_to_el3(uint64_t current_el)
 {
     switch(current_el){

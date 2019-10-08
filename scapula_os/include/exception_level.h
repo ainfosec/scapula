@@ -39,4 +39,22 @@ void set_current_el(uint32_t new_el);
 //      SCAPULA_PRINT("This will print from EL1");
 void switch_to_el(uint32_t target_el);
 
+// get_exception_counter
+//
+// Returns the number of synchronous exceptions that have occurred since the
+// last time the Scapula OS exception counter was cleared.
+//
+// @return The number of exceptions that have occurred
+uint64_t get_exception_counter(void);
+
+// reset_exception_counter
+//
+// Reset the Scapula OS exception counter to 0
+void reset_exception_counter(void);
+
+// increment_exception_counter
+//
+// Adds an exception occurrence to the exception counter
+void increment_exception_counter(void);
+
 #endif

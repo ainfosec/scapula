@@ -1,7 +1,7 @@
 .global _start
 _start:
-    // Stash previous stage loader
-    stp     x0, x1, [sp, #-16]!
+    // Stash previous stage loader, preserving a single argument in x0
+    stp     xzr, x1, [sp, #-16]!
     stp     x2, x3, [sp, #-16]!
     stp     x4, x5, [sp, #-16]!
     stp     x6, x7, [sp, #-16]!
@@ -51,8 +51,8 @@ _start:
     mov     x30, xzr
 
     // Run the main routine.
-    ldr     x0, =main
-    blr     x0
+    ldr     x1, =main
+    blr     x1
 
     // Return to previous loader
     ldp     x30, xzr, [sp], #16
@@ -70,6 +70,6 @@ _start:
     ldp     x6, x7, [sp], #16
     ldp     x4, x5, [sp], #16
     ldp     x2, x3, [sp], #16
-    ldp     x0, x1, [sp], #16
+    ldp     xzr, x1, [sp], #16
     
     ret

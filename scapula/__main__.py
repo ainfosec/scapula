@@ -38,14 +38,14 @@ for key, g in scapula.generator.generators.items():
 
 # Create a main() function that runs all aarch64 generators
 with open(os.path.join(scapula_output_dir, "aarch64_main.c"), "w") as outfile:
-    outfile.write("#include <scapula_os/exception_level.h>\n")
+    outfile.write("#include <scapula_os/init.h>\n")
     outfile.write("#include <shoulder/CHeaderGenerator/shoulder.h>\n")
 
     for key, g in scapula.generator.generators.items():
         outfile.write("void " + str(g.__class__.__name__) + "_run();\n")
 
-    outfile.write("\nvoid main()\n{\n")
-    outfile.write("\tset_current_el(aarch64_currentel_el_get());\n")
+    outfile.write("\nvoid main(struct scapula_os_config * cfg)\n{\n")
+    outfile.write("\tinit_scapula_os(cfg);\n")
 
     for key, g in scapula.generator.generators.items():
         if g.execution_state == "aarch64":

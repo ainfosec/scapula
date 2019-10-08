@@ -29,7 +29,7 @@ def declare_variable(outfile: TextIO, name: str, size: int, value: int=0,
         size_type = "uint8_t"
 
     output = "{const}{size_type} {name} = {val};\n".format(
-        const="const " if const is True else "",
+        const="const " if const is True else "volatile ",
         size_type=size_type,
         name=str(name),
         val=hex(value) if value else "0"
