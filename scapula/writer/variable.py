@@ -38,3 +38,21 @@ def declare_variable(outfile: TextIO, name: str, size: int, value: int=0,
     outfile.write(output)
 
     return str(name)
+
+
+def assign_variable(outfile: TextIO, var: str, rvalue: str, indent: int=0):
+    """Writes a variable assignment statement using the given r-value expression
+
+    Args:
+        outfile: The output file to be written
+        var: The name of the variable to be assigned
+        rvalue: The r-value (expression) to be used in the variable assignment
+        indent (optional): The number of leading tab characters to be written
+
+    Examples:
+        >>> var = declare_variable(sys.stdout, "x")
+        >>> assign_variable(sys.stdout, var, "1 + 1")
+        x = 1 + 1;
+    """
+    write_indent(outfile, indent)
+    outfile.write(str(var) + " = " + str(rvalue) + ";\n")
