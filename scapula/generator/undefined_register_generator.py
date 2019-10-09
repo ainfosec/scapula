@@ -119,13 +119,27 @@ class UndefinedRegisterGenerator(ScapulaGenerator):
 
         writer.if_statement(outfile, var1 + " == " + var2 + " && " + var2 + " == " + var3)
         msg = "System register {r} is not writable".format(r=reg.name)
-        writer.print_debug(outfile, msg, indent=1)
-        # TODO: Check why register has NO CHANGE by counting exceptions:
-        # - Static: No change but no exceptions
-        # - Unreadable: Exceptions on reads but not writes
-        #     - init == ones == zeros == 0
-        # - Unwritable: Exceptions on writes but not reads
-        # - Unimplemented: Exceptions on writes and reads
+        writer.if_statement(outfile, var5 + " > 0 && " + var6 + " > 0", indent=1)
+        writer.print_debug(outfile, msg, indent=2)
+        sub_msg = "    Unimplemented / Protected: Exceptions on writes and reads"
+        writer.print_debug(outfile, sub_msg, indent=2)
+
+        writer.else_if_statement(outfile, var5 + " > 0", indent=1)
+        writer.print_warning(outfile, msg, indent=2)
+        sub_msg = "    Unreadable: Exceptions only on reads"
+        writer.print_warning(outfile, sub_msg, indent=2)
+
+        writer.else_if_statement(outfile, var6 + " > 0", indent=1)
+        writer.print_warning(outfile, msg, indent=2)
+        sub_msg = "    Unwritable: Exceptions only on writes"
+        writer.print_warning(outfile, sub_msg, indent=2)
+
+        writer.else_statement(outfile, indent=1)
+        writer.print_warning(outfile, msg, indent=2)
+        sub_msg = "    Static: No exceptions on reads or writes"
+        writer.print_warning(outfile, sub_msg, indent=2)
+        writer.endif(outfile, indent=1)
+
 
         writer.else_if_statement(outfile, var2 + " == 0xFFFFFFFFFFFFFFFF && "
                                         + var3 + " == 0x0")
