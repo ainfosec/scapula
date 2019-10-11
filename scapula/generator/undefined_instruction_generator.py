@@ -55,21 +55,40 @@ class UndefinedInstructionGenerator(ScapulaGenerator):
 
     def generate_testcase(self, outfile, instr):
         mnemonic = instr.access_mechanisms["mrs_register"][0].operand_mnemonic
+        var1 = writer.declare_variable(outfile, "exception_count", 32)
         writer.write_newline(outfile)
 
+        writer.reset_exception_counter(outfile)
         msg = "SYS {m}, #0x0 ...".format(m=mnemonic)
         writer.print_debug(outfile, msg)
         writer.execute_sys_instruction(outfile, instr, 0x0)
+        writer.get_exception_counter(outfile, var1)
+        writer.if_statement(outfile, var1 + " == 0")
+        msg = "SYS {m}, #0x0 executed without an exception".format(m=mnemonic)
+        writer.print_warning(outfile, msg, indent=1)
+        writer.endif(outfile)
         writer.write_newline(outfile)
 
+        writer.reset_exception_counter(outfile)
         msg = "SYS {m}, #0xFFFFFFFFFFFFFFFF ...".format(m=mnemonic)
         writer.print_debug(outfile, msg)
         writer.execute_sys_instruction(outfile, instr, 0xFFFFFFFFFFFFFFFF)
+        writer.get_exception_counter(outfile, var1)
+        writer.if_statement(outfile, var1 + " == 0")
+        msg = "SYS {m}, #0xFFFFFFFFFFFFFFFF executed without an exception".format(m=mnemonic)
+        writer.print_warning(outfile, msg, indent=1)
+        writer.endif(outfile)
         writer.write_newline(outfile)
 
+        writer.reset_exception_counter(outfile)
         msg = "SYSL {m} ...".format(m=mnemonic)
         writer.print_debug(outfile, msg)
         writer.execute_sysl_instruction(outfile, instr)
+        writer.get_exception_counter(outfile, var1)
+        writer.if_statement(outfile, var1 + " == 0")
+        msg = "SYSL {m} executed without an exception".format(m=mnemonic)
+        writer.print_warning(outfile, msg, indent=1)
+        writer.endif(outfile)
         writer.write_newline(outfile)
 
         return

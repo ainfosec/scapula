@@ -51,44 +51,95 @@ class UndefinedRegisterGenerator(ScapulaGenerator):
         var1 = writer.declare_variable(outfile, "init", reg.size)
         var2 = writer.declare_variable(outfile, "ones", reg.size)
         var3 = writer.declare_variable(outfile, "zeros", reg.size)
+        var4 = writer.declare_variable(outfile, "exceptions", reg.size)
+        var5 = writer.declare_variable(outfile, "read_exceptions", reg.size)
+        var6 = writer.declare_variable(outfile, "write_exceptions", reg.size)
 
         writer.write_newline(outfile)
 
         msg = "Reading initial {r}...".format(r=reg.name)
         writer.print_debug(outfile, msg)
+        writer.reset_exception_counter(outfile)
         writer.get_register(outfile, reg, var1)
+        writer.get_exception_counter(outfile, var4)
+        writer.if_statement(outfile, var4 + " > 0")
+        writer.assign_variable(outfile, var5, var5 + " + " + var4, indent=1)
+        writer.endif(outfile)
+        writer.write_newline(outfile)
 
         msg = "Clearing {r}...".format(r=reg.name)
         writer.print_debug(outfile, msg)
+        writer.reset_exception_counter(outfile)
         writer.set_register(outfile, reg, 0x0000000000000000)
+        writer.get_exception_counter(outfile, var4)
+        writer.if_statement(outfile, var4 + " > 0")
+        writer.assign_variable(outfile, var6, var6 + " + " + var4, indent=1)
+        writer.endif(outfile)
+        writer.write_newline(outfile)
 
         msg = "Writing 1s to {r}...".format(r=reg.name)
         writer.print_debug(outfile, msg)
+        writer.reset_exception_counter(outfile)
         writer.set_register(outfile, reg, 0xFFFFFFFFFFFFFFFF)
+        writer.get_exception_counter(outfile, var4)
+        writer.if_statement(outfile, var4 + " > 0")
+        writer.assign_variable(outfile, var6, var6 + " + " + var4, indent=1)
+        writer.endif(outfile)
+        writer.write_newline(outfile)
 
         msg = "Reading {r}...".format(r=reg.name)
         writer.print_debug(outfile, msg)
+        writer.reset_exception_counter(outfile)
         writer.get_register(outfile, reg, var2)
+        writer.get_exception_counter(outfile, var4)
+        writer.if_statement(outfile, var4 + " > 0")
+        writer.assign_variable(outfile, var5, var5 + " + " + var4, indent=1)
+        writer.endif(outfile)
+        writer.write_newline(outfile)
 
         msg = "Writing 0s to {r}...".format(r=reg.name)
         writer.print_debug(outfile, msg)
+        writer.reset_exception_counter(outfile)
         writer.set_register(outfile, reg, 0x0000000000000000)
+        writer.get_exception_counter(outfile, var4)
+        writer.if_statement(outfile, var4 + " > 0")
+        writer.assign_variable(outfile, var6, var6 + " + " + var4, indent=1)
+        writer.endif(outfile)
+        writer.write_newline(outfile)
 
         msg = "Reading {r}...".format(r=reg.name)
         writer.print_debug(outfile, msg)
+        writer.reset_exception_counter(outfile)
         writer.get_register(outfile, reg, var3)
-
+        writer.get_exception_counter(outfile, var4)
+        writer.if_statement(outfile, var4 + " > 0")
+        writer.assign_variable(outfile, var5, var5 + " + " + var4, indent=1)
+        writer.endif(outfile)
         writer.write_newline(outfile)
 
         writer.if_statement(outfile, var1 + " == " + var2 + " && " + var2 + " == " + var3)
         msg = "System register {r} is not writable".format(r=reg.name)
-        writer.print_debug(outfile, msg, indent=1)
-        # TODO: Check why register has NO CHANGE by counting exceptions:
-        # - Static: No change but no exceptions
-        # - Unreadable: Exceptions on reads but not writes
-        #     - init == ones == zeros == 0
-        # - Unwritable: Exceptions on writes but not reads
-        # - Unimplemented: Exceptions on writes and reads
+        writer.if_statement(outfile, var5 + " > 0 && " + var6 + " > 0", indent=1)
+        writer.print_debug(outfile, msg, indent=2)
+        sub_msg = "    Unimplemented / Protected: Exceptions on writes and reads"
+        writer.print_debug(outfile, sub_msg, indent=2)
+
+        writer.else_if_statement(outfile, var5 + " > 0", indent=1)
+        writer.print_warning(outfile, msg, indent=2)
+        sub_msg = "    Unreadable: Exceptions only on reads"
+        writer.print_warning(outfile, sub_msg, indent=2)
+
+        writer.else_if_statement(outfile, var6 + " > 0", indent=1)
+        writer.print_warning(outfile, msg, indent=2)
+        sub_msg = "    Unwritable: Exceptions only on writes"
+        writer.print_warning(outfile, sub_msg, indent=2)
+
+        writer.else_statement(outfile, indent=1)
+        writer.print_warning(outfile, msg, indent=2)
+        sub_msg = "    Static: No exceptions on reads or writes"
+        writer.print_warning(outfile, sub_msg, indent=2)
+        writer.endif(outfile, indent=1)
+
 
         writer.else_if_statement(outfile, var2 + " == 0xFFFFFFFFFFFFFFFF && "
                                         + var3 + " == 0x0")
@@ -100,10 +151,10 @@ class UndefinedRegisterGenerator(ScapulaGenerator):
         writer.print_warning(outfile, msg, indent=1)
         msg = "RES0 Mask: %lx"
         fmt = "~" + var2
-        writer.print_warning(outfile, msg, format_str=fmt)
+        writer.print_warning(outfile, msg, format_str=fmt, indent=1)
         msg = "RES1 Mask: %lx"
         fmt = var3
-        writer.print_warning(outfile, msg, format_str=fmt)
+        writer.print_warning(outfile, msg, format_str=fmt, indent=1)
         writer.endif(outfile)
 
         writer.write_newline(outfile)
