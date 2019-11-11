@@ -52,7 +52,7 @@ CMake version > 3.12 is required.
 The easiest way to build:
 
 ```
-git clone https://gitlab.ainfosec.com/bareflank/tlp2_projects/scapula
+git clone https://github.com/ainfosec/scapula.git
 mkdir build && cd build
 cmake ../scapula
 make
@@ -62,7 +62,7 @@ The better way to build:
 
 ```
 mkdir workspace && cd workspace
-git clone https://gitlab.ainfosec.com/bareflank/tlp2_projects/scapula
+git clone https://github.com/ainfosec/scapula.git
 mkdir cache             # <-- Dependencies will download here, shared across builds
 touch config.cmake      # <-- Edit this file to define your build configurations
 mkdir build && cd build
