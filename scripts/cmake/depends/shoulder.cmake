@@ -1,6 +1,6 @@
 message(STATUS "Including dependency: shoulder")
 
-set(SHOULDER_URL "https://github.com/bareflank/shoulder/archive/master.zip")
+set(SHOULDER_URL "https://github.com/ainfosec/shoulder/archive/master.zip")
 set(SHOULDER_SOURCE_DIR ${CACHE_DIR}/shoulder)
 set(SHOULDER_BUILD_DIR ${DEPENDS_DIR}/shoulder/${AARCH64_TARGET_TRIPLE}/build)
 set(SHOULDER_INSTALL_DIR ${SCAPULA_HOST_INSTALL_PREFIX}/bin/shoulder)
